@@ -1,0 +1,15 @@
+# Ignore everything
+*
+
+# Allow the whole /app folder
+!app
+
+# Ignore junk inside /app
+app/node_modules
+app/dist
+app/build
+app/coverage
+app/*.log
+app/.DS_Store
+app/.vscode
+app/.idea
