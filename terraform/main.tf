@@ -42,3 +42,51 @@ module "iam_roles" {
   ecr_repo_name   = var.ecr_repo_name
   account_id      = var.account_id
 }
+module "alb" {
+  source = "./modules/alb"
+
+  alb_name                = var.alb_name
+  alb_internal            = var.alb_internal
+  alb_deletion_protection = var.alb_deletion_protection
+  alb_security_group_ids  = [module.security_groups.alb_sg_id]
+  public_subnet_ids       = module.vpc.public_subnet_ids
+  vpc_id                  = module.vpc.vpc_id
+
+  target_group_name     = var.target_group_name
+  target_group_protocol = var.target_group_protocol
+  container_port        = var.container_port
+
+  health_check_path                = var.health_check_path
+  health_check_interval            = var.health_check_interval
+  health_check_timeout             = var.health_check_timeout
+  health_check_healthy_threshold   = var.health_check_healthy_threshold
+  health_check_unhealthy_threshold = var.health_check_unhealthy_threshold
+  health_check_matcher             = var.health_check_matcher
+
+  certificate_arn           = module.acm.certificate_arn
+  https_listener_port       = var.https_listener_port
+  https_listener_protocol   = var.https_listener_protocol
+  ssl_policy                = var.ssl_policy
+  http_listener_port        = var.http_listener_port
+  http_listener_protocol    = var.http_listener_protocol
+  http_redirect_status_code = var.http_redirect_status_code
+
+  # WAF-related inputs
+  enable_waf      = true
+  waf_name        = "my-alb-waf"
+  waf_scope       = "REGIONAL"
+  waf_rule_name   = "AWS-AWSManagedRulesCommonRuleSet"
+  waf_metric_name = "albWAF"
+
+}
+
+// acm
+module "acm" {
+  source         = "./modules/acm"
+  domain_name    = var.record_name
+  hosted_zone_id = var.hosted_zone_id
+  tags = {
+    Project = "Memos"
+    Owner   = "Muna"
+  }
+}

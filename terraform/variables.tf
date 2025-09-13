@@ -102,11 +102,6 @@ variable "assume_service" {
 variable "policy_name" {
   type = string
 }
-variable "region" {
-  description = "AWS region to deploy resources"
-  type        = string
-  default     = "eu-west-2"
-}
 
 variable "ecr_repo_name" {
   description = "Name of the ECR repository"
@@ -114,5 +109,127 @@ variable "ecr_repo_name" {
 }
 variable "account_id" {
   description = "AWS account ID"
+  type        = string
+}
+
+// ALB
+
+variable "alb_name" {
+  type = string
+}
+variable "alb_internal" {
+  type    = bool
+  default = false
+}
+variable "alb_deletion_protection" {
+  type    = bool
+  default = true
+}
+
+variable "target_group_name" {
+  type = string
+}
+variable "target_group_protocol" {
+  type    = string
+  default = "HTTP"
+}
+
+variable "health_check_path" {
+  type    = string
+  default = "/"
+}
+variable "health_check_interval" {
+  type    = number
+  default = 30
+}
+variable "health_check_timeout" {
+  type    = number
+  default = 5
+}
+variable "health_check_healthy_threshold" {
+  type    = number
+  default = 2
+}
+variable "health_check_unhealthy_threshold" {
+  type    = number
+  default = 2
+}
+variable "health_check_matcher" {
+  type    = string
+  default = "200"
+}
+
+variable "ssl_policy" {
+  type    = string
+  default = "ELBSecurityPolicy-2016-08"
+}
+variable "https_listener_port" {
+  type    = number
+  default = 443
+}
+
+variable "https_listener_protocol" {
+  type    = string
+  default = "HTTPS"
+}
+
+variable "http_listener_port" {
+  type        = number
+  description = "Port for HTTP listener"
+}
+
+variable "http_listener_protocol" {
+  type        = string
+  description = "Protocol for HTTP listener"
+}
+
+variable "http_redirect_status_code" {
+  type        = string
+  description = "Redirect status code (e.g., HTTP_301)"
+}
+
+variable "enable_waf" {
+  description = "Whether to enable WAF for the ALB"
+  type        = bool
+  default     = false
+}
+
+variable "waf_name" {
+  description = "Name of the WAF Web ACL"
+  type        = string
+  default     = "alb-waf"
+}
+
+variable "waf_scope" {
+  description = "WAF scope: REGIONAL for ALB"
+  type        = string
+  default     = "REGIONAL"
+}
+
+variable "waf_rule_name" {
+  description = "Name of the WAF rule"
+  type        = string
+  default     = "AWS-AWSManagedRulesCommonRuleSet"
+}
+
+variable "waf_metric_name" {
+  description = "WAF metric name"
+  type        = string
+  default     = "albWAF"
+}
+variable "container_port" {
+  description = "Port that your container listens on"
+  type        = number
+  default     = 8081
+}
+
+// route53
+variable "record_name" {
+  description = "The domain name to issue the ACM certificate for (e.g., app.example.com)"
+  type        = string
+}
+
+variable "hosted_zone_id" {
+  description = "The Route 53 hosted zone ID where the DNS validation record will be created"
   type        = string
 }
