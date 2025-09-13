@@ -31,3 +31,14 @@ module "vpc" {
   tags                = var.tags
   vpc_endpoint_sg_id  = module.security_groups.ecs_sg_id 
 }
+
+module "iam_roles" {
+  source = "./modules/iam_roles"
+
+  role_name       = var.role_name
+  assume_service  = var.assume_service
+  policy_name     = var.policy_name
+  region          = var.region
+  ecr_repo_name   = var.ecr_repo_name
+  account_id      = var.account_id
+}
