@@ -17,10 +17,10 @@ resource "aws_lb" "this" {
   enable_deletion_protection = var.alb_deletion_protection
   drop_invalid_header_fields = true
 
-  access_logs {
-    bucket  = "your-log-bucket-name"
-    enabled = true
-  }
+ access_logs {
+  bucket  = "my-alb-logs-muna"
+  enabled = true
+}
 
 }
 
@@ -30,6 +30,7 @@ resource "aws_lb_target_group" "this" {
   protocol    = var.target_group_protocol
   vpc_id      = var.vpc_id
   target_type = "ip"
+  depends_on = [var.vpc_id]
 
   health_check {
     path                = var.health_check_path
@@ -131,3 +132,24 @@ resource "aws_wafv2_web_acl" "alb_waf" {
   }
 
 }
+
+resource "aws_s3_bucket_policy" "alb_logs_policy" {
+  bucket = "my-alb-logs-muna"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid = "AllowALBLogs",
+        Effect = "Allow",
+        Principal = {
+          Service = "logdelivery.elasticloadbalancing.amazonaws.com"
+        },
+        Action = "s3:PutObject",
+        Resource = "arn:aws:s3:::my-alb-logs-muna/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+      }
+    ]
+  })
+}
+
+data "aws_caller_identity" "current" {}

@@ -20,18 +20,6 @@ module "security_groups" {
   ecs_egress_to_port      = var.ecs_egress_to_port
   ecs_egress_cidr_blocks  = var.ecs_egress_cidr_blocks
 }
-
-module "vpc" {
-  source              = "./modules/vpc"
-  region              = var.region
-  vpc_cidr_block      = var.vpc_cidr_block
-  public_subnet_cidrs = var.public_subnet_cidrs
-  private_subnet_cidrs= var.private_subnet_cidrs
-  azs                 = var.azs
-  tags                = var.tags
-  vpc_endpoint_sg_id  = module.security_groups.ecs_sg_id 
-}
-
 module "iam_roles" {
   source = "./modules/iam_roles"
 
@@ -89,4 +77,52 @@ module "acm" {
     Project = "Memos"
     Owner   = "Muna"
   }
+}
+
+//route53
+module "route53" {
+  source         = "./modules/route53"
+  hosted_zone_id = var.hosted_zone_id
+  record_name    = var.record_name
+  alb_dns_name   = module.alb.alb_dns_name
+  alb_zone_id    = module.alb.alb_zone_id
+}
+module "vpc" {
+  source              = "./modules/vpc"
+  region              = var.region
+  vpc_cidr_block      = var.vpc_cidr_block
+  public_subnet_cidrs = var.public_subnet_cidrs
+  private_subnet_cidrs= var.private_subnet_cidrs
+  azs                 = var.azs
+  tags                = var.tags
+  vpc_endpoint_sg_id  = module.security_groups.ecs_sg_id 
+}
+resource "null_resource" "wait_for_vpc" {
+  triggers = {
+    vpc_id = module.vpc.vpc_id
+  }
+
+  provisioner "local-exec" {
+    command = "sleep 15"
+  }
+}
+
+module "ecs" {
+  source = "./modules/ecs_fargate"
+
+  cluster_name          = var.cluster_name
+  service_name          = var.service_name
+  cluster_insight_name  = var.cluster_insight_name
+  cluster_insight_value = var.cluster_insight_value
+  desired_count         = var.desired_count
+  container_name        = var.container_name
+  container_port        = var.container_port
+  task_family           = var.task_family
+  task_cpu              = var.task_cpu
+  task_memory           = var.task_memory
+  image_url             = var.image_url
+  execution_role_arn    = module.iam_roles.execution_role_arn
+  target_group_arn      = module.alb.target_group_arn
+  subnet_ids            = module.vpc.private_subnet_ids
+  security_group_ids    = [module.security_groups.ecs_sg_id]
 }

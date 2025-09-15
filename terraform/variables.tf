@@ -224,12 +224,65 @@ variable "container_port" {
 }
 
 // route53
+variable "hosted_zone_id" {
+  type        = string
+  description = "Route 53 Hosted Zone ID"
+}
+
 variable "record_name" {
-  description = "The domain name to issue the ACM certificate for (e.g., app.example.com)"
+  type        = string
+  description = "Domain name to point to ALB (e.g. app.munaibrahim.com)"
+}
+
+// ecs_fargate
+variable "cluster_name" {
+  description = "ECS cluster name"
   type        = string
 }
 
-variable "hosted_zone_id" {
-  description = "The Route 53 hosted zone ID where the DNS validation record will be created"
+variable "service_name" {
+  description = "ECS service name"
   type        = string
 }
+
+variable "desired_count" {
+  description = "Number of desired ECS tasks"
+  type        = number
+}
+
+variable "cluster_insight_name" {
+  description = "name of the cluster setting name"
+  type        = string
+}
+
+variable "cluster_insight_value" {
+  description = "name of the cluster setting value"
+  type        = string
+}
+
+variable "container_name" {
+  description = "name of the container"
+  type        = string
+}
+
+variable "task_family" {
+  description = "family name"
+  type        = string
+}
+variable "task_cpu" {
+  description = "cpu"
+  type        = string
+}
+
+variable "task_memory" {
+  description = "memory"
+  type        = string
+}
+
+variable "image_url" {
+  description = "link of the image in ecr"
+  type        = string
+}
+
+
+

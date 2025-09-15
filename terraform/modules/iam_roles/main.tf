@@ -63,3 +63,9 @@ resource "aws_iam_role_policy" "this" {
     ]
   })
 }
+
+# Attach the AWS-managed ECS Task Execution Role policy
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
+  role       = aws_iam_role.this.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}

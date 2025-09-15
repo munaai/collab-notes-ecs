@@ -102,6 +102,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   vpc_endpoint_type  = "Interface"
   subnet_ids         = [aws_subnet.private_1.id, aws_subnet.private_2.id]
   security_group_ids = [var.vpc_endpoint_sg_id]
+  private_dns_enabled = true
 
   tags = merge(var.tags, { Name = "vpce-ecr-api" })
 }
@@ -112,6 +113,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_endpoint_type  = "Interface"
   subnet_ids         = [aws_subnet.private_1.id, aws_subnet.private_2.id]
   security_group_ids = [var.vpc_endpoint_sg_id]
+  private_dns_enabled = true
 
   tags = merge(var.tags, { Name = "vpce-ecr-dkr" })
 }
@@ -122,6 +124,7 @@ resource "aws_vpc_endpoint" "logs" {
   vpc_endpoint_type  = "Interface"
   subnet_ids         = [aws_subnet.private_1.id, aws_subnet.private_2.id]
   security_group_ids = [var.vpc_endpoint_sg_id]
+  private_dns_enabled = true
 
   tags = merge(var.tags, { Name = "vpce-logs" })
 }

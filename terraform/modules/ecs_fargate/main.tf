@@ -37,6 +37,7 @@ resource "aws_ecs_service" "this" {
   }
 
   launch_type = "FARGATE"
+  
 }
 
 resource "aws_ecs_task_definition" "this" {
