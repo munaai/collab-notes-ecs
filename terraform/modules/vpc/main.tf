@@ -153,8 +153,14 @@ resource "aws_flow_log" "vpc" {
   traffic_type    = "ALL"
   vpc_id          = aws_vpc.main.id
 }
-
+resource "aws_kms_key" "cloudwatch_logs" {
+  description             = "KMS key for encrypting CloudWatch logs (VPC)"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+}
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/flow-logs"
   retention_in_days = 365
+  kms_key_id        = aws_kms_key.cloudwatch_logs.arn
 }
+
