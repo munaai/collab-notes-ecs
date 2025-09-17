@@ -32,6 +32,15 @@ jobs:
         run: |
           aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
 
+      - name: Create ECR repository if it does not exist
+        run: |
+              aws ecr describe-repositories \
+                --repository-names $ECR_REPOSITORY \
+                --region $AWS_REGION \
+              || aws ecr create-repository \
+                --repository-name $ECR_REPOSITORY \
+                --region $AWS_REGION
+
       - name: Build Docker image
         run: docker build -f ./app/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$COMMIT_SHA ./app
 
