@@ -249,15 +249,15 @@ variable "desired_count" {
   type        = number
 }
 
-variable "cluster_insight_name" {
-  description = "name of the cluster setting name"
-  type        = string
-}
+# variable "cluster_insight_name" {
+#   description = "name of the cluster setting name"
+#   type        = string
+# }
 
-variable "cluster_insight_value" {
-  description = "name of the cluster setting value"
-  type        = string
-}
+# variable "cluster_insight_value" {
+#   description = "name of the cluster setting value"
+#   type        = string
+# }
 
 variable "container_name" {
   description = "name of the container"

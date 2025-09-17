@@ -12,9 +12,9 @@ resource "aws_ecs_cluster" "this" {
   name = var.cluster_name
 
   setting {
-    name  = var.cluster_insight_name
-    value = var.cluster_insight_value
-  }
+    name  = "containerInsights"
+    value = "enabled"
+}
 }
 
 resource "aws_ecs_service" "this" {
