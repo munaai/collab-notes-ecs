@@ -24,7 +24,7 @@ resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidrs[0]
   availability_zone       = var.azs[0]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = merge(var.tags, { Name = "public-subnet-1" })
 }
@@ -33,7 +33,7 @@ resource "aws_subnet" "public_2" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidrs[1]
   availability_zone       = var.azs[1]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = merge(var.tags, { Name = "public-subnet-2" })
 }
@@ -136,4 +136,14 @@ resource "aws_vpc_endpoint" "s3" {
   route_table_ids   = [aws_route_table.private.id]
 
   tags = merge(var.tags, { Name = "vpce-s3" })
+}
+resource "aws_flow_log" "vpc" {
+  log_destination = aws_cloudwatch_log_group.vpc_flow_logs.arn
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.main.id
+}
+
+resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
+  name              = "/aws/vpc/flow-logs"
+  retention_in_days = 30
 }
