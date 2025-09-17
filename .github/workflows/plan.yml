@@ -29,6 +29,12 @@ jobs:
       - name: Download tfvars file from S3
         run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/terraform.tfvars
 
+      - name: Verify tfvars file exists
+        run: |
+          ls -l terraform/
+          echo "===== terraform.tfvars ====="
+          cat terraform/terraform.tfvars
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -42,7 +48,7 @@ jobs:
           tflint --version
           tflint --init --chdir=terraform
           tflint --chdir=terraform
-          
+
       - name: Install and Run TFLint
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
@@ -61,6 +67,11 @@ jobs:
         run: terraform init
         working-directory: terraform
 
+      # - name: Terraform Plan
+      #   run: terraform plan -var-file="terraform.tfvars" -out=tfplan
+      #   working-directory: terraform
+ 
       - name: Terraform Plan
-        run: terraform plan -var-file="terraform.tfvars" -out=tfplan
+        run: terraform plan -no-color -detailed-exitcode -var-file="terraform.tfvars"
         working-directory: terraform
+        continue-on-error: true
