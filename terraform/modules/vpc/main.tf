@@ -20,6 +20,17 @@ resource "aws_vpc" "main" {
   tags = merge(var.tags, { Name = "custom-vpc" })
 }
 
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  ingress = []
+  egress  = []
+
+  tags = {
+    Name = "default-sg-locked"
+  }
+}
+
 resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidrs[0]
@@ -145,5 +156,5 @@ resource "aws_flow_log" "vpc" {
 
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/flow-logs"
-  retention_in_days = 30
+  retention_in_days = 365
 }

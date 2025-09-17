@@ -8,6 +8,7 @@ terraform {
   }
 }
 
+# checkov:skip=CKV2_AWS_5: This SG is attached indirectly through module outputs (alb_sg_id used by ALB module)
 resource "aws_security_group" "alb" {
   name        = var.alb_sg_name
   description = var.alb_sg_description
@@ -39,6 +40,7 @@ resource "aws_security_group" "alb" {
   }
 }
 
+# checkov:skip=CKV2_AWS_5: This SG is attached indirectly through module outputs (ecs_sg_id used by ECS and VPC module)
 resource "aws_security_group" "ecs" {
   name        = var.ecs_sg_name
   description = var.ecs_sg_description

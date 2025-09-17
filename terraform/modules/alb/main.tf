@@ -160,5 +160,5 @@ resource "aws_wafv2_web_acl_logging_configuration" "alb_waf_logging" {
 
 resource "aws_cloudwatch_log_group" "waf_logs" {
   name              = "/aws/waf/alb"
-  retention_in_days = 30
+  retention_in_days = 365
 }
