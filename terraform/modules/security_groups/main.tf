@@ -12,7 +12,7 @@ resource "aws_security_group" "alb" {
   name        = var.alb_sg_name
   description = var.alb_sg_description
   vpc_id      = var.vpc_id
-  depends_on = [var.vpc_id]
+  depends_on  = [var.vpc_id]
 
   ingress {
     from_port   = var.alb_ingress_http_from_port
@@ -52,11 +52,11 @@ resource "aws_security_group" "ecs" {
     description     = "Allows main app traffic to ECS"
   }
   ingress {
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    self = true
-    description     = "Allow ECS tasks to connect to VPC endpoints"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    self        = true
+    description = "Allow ECS tasks to connect to VPC endpoints"
   }
 
   egress {

@@ -97,43 +97,43 @@ resource "aws_route_table_association" "private_2" {
 }
 
 resource "aws_vpc_endpoint" "ecr_api" {
-  vpc_id             = aws_vpc.main.id
-  service_name       = "com.amazonaws.${var.region}.ecr.api"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.private_1.id, aws_subnet.private_2.id]
-  security_group_ids = [var.vpc_endpoint_sg_id]
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.${var.region}.ecr.api"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+  security_group_ids  = [var.vpc_endpoint_sg_id]
   private_dns_enabled = true
 
   tags = merge(var.tags, { Name = "vpce-ecr-api" })
 }
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id             = aws_vpc.main.id
-  service_name       = "com.amazonaws.${var.region}.ecr.dkr"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.private_1.id, aws_subnet.private_2.id]
-  security_group_ids = [var.vpc_endpoint_sg_id]
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.${var.region}.ecr.dkr"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+  security_group_ids  = [var.vpc_endpoint_sg_id]
   private_dns_enabled = true
 
   tags = merge(var.tags, { Name = "vpce-ecr-dkr" })
 }
 
 resource "aws_vpc_endpoint" "logs" {
-  vpc_id             = aws_vpc.main.id
-  service_name       = "com.amazonaws.${var.region}.logs"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.private_1.id, aws_subnet.private_2.id]
-  security_group_ids = [var.vpc_endpoint_sg_id]
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.${var.region}.logs"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+  security_group_ids  = [var.vpc_endpoint_sg_id]
   private_dns_enabled = true
 
   tags = merge(var.tags, { Name = "vpce-logs" })
 }
 
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id           = aws_vpc.main.id
-  service_name     = "com.amazonaws.${var.region}.s3"
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${var.region}.s3"
   vpc_endpoint_type = "Gateway"
-  route_table_ids  = [aws_route_table.private.id]
+  route_table_ids   = [aws_route_table.private.id]
 
   tags = merge(var.tags, { Name = "vpce-s3" })
 }

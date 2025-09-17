@@ -29,12 +29,6 @@ jobs:
       - name: Download tfvars file from S3
         run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/terraform.tfvars
 
-      - name: Verify tfvars file exists
-        run: |
-          ls -l terraform/
-          echo "===== terraform.tfvars ====="
-          cat terraform/terraform.tfvars
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -67,11 +61,8 @@ jobs:
         run: terraform init
         working-directory: terraform
 
-      # - name: Terraform Plan
-      #   run: terraform plan -var-file="terraform.tfvars" -out=tfplan
-      #   working-directory: terraform
- 
       - name: Terraform Plan
-        run: terraform plan -no-color -detailed-exitcode -var-file="terraform.tfvars"
+        run: terraform plan -var-file="terraform.tfvars" -out=tfplan
         working-directory: terraform
-        continue-on-error: true
+ 
+      

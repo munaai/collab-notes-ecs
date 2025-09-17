@@ -1,5 +1,5 @@
 module "security_groups" {
-  source = "./modules/security_groups" 
+  source = "./modules/security_groups"
 
   alb_sg_name                 = var.alb_sg_name
   alb_sg_description          = var.alb_sg_description
@@ -12,23 +12,23 @@ module "security_groups" {
   egress_protocol             = var.egress_protocol
   alb_ingress_cidr_blocks     = var.alb_ingress_cidr_blocks
 
-  ecs_sg_name             = var.ecs_sg_name
-  ecs_sg_description      = var.ecs_sg_description
-  ecs_ingress_from_port   = var.ecs_ingress_from_port
-  ecs_ingress_to_port     = var.ecs_ingress_to_port
-  ecs_egress_from_port    = var.ecs_egress_from_port
-  ecs_egress_to_port      = var.ecs_egress_to_port
-  ecs_egress_cidr_blocks  = var.ecs_egress_cidr_blocks
+  ecs_sg_name            = var.ecs_sg_name
+  ecs_sg_description     = var.ecs_sg_description
+  ecs_ingress_from_port  = var.ecs_ingress_from_port
+  ecs_ingress_to_port    = var.ecs_ingress_to_port
+  ecs_egress_from_port   = var.ecs_egress_from_port
+  ecs_egress_to_port     = var.ecs_egress_to_port
+  ecs_egress_cidr_blocks = var.ecs_egress_cidr_blocks
 }
 module "iam_roles" {
   source = "./modules/iam_roles"
 
-  role_name       = var.role_name
-  assume_service  = var.assume_service
-  policy_name     = var.policy_name
-  region          = var.region
-  ecr_repo_name   = var.ecr_repo_name
-  account_id      = var.account_id
+  role_name      = var.role_name
+  assume_service = var.assume_service
+  policy_name    = var.policy_name
+  region         = var.region
+  ecr_repo_name  = var.ecr_repo_name
+  account_id     = var.account_id
 }
 module "alb" {
   source = "./modules/alb"
@@ -88,14 +88,14 @@ module "route53" {
   alb_zone_id    = module.alb.alb_zone_id
 }
 module "vpc" {
-  source              = "./modules/vpc"
-  region              = var.region
-  vpc_cidr_block      = var.vpc_cidr_block
-  public_subnet_cidrs = var.public_subnet_cidrs
-  private_subnet_cidrs= var.private_subnet_cidrs
-  azs                 = var.azs
-  tags                = var.tags
-  vpc_endpoint_sg_id  = module.security_groups.ecs_sg_id 
+  source               = "./modules/vpc"
+  region               = var.region
+  vpc_cidr_block       = var.vpc_cidr_block
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  private_subnet_cidrs = var.private_subnet_cidrs
+  azs                  = var.azs
+  tags                 = var.tags
+  vpc_endpoint_sg_id   = module.security_groups.ecs_sg_id
 }
 # resource "null_resource" "wait_for_vpc" {
 #   triggers = {
