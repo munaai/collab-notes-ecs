@@ -93,7 +93,6 @@ variable "http_redirect_status_code" {
 variable "enable_waf" {
   description = "Whether to enable WAF for the ALB"
   type        = bool
-  default     = false
 }
 
 variable "waf_name" {

@@ -60,11 +60,11 @@ module "alb" {
   http_redirect_status_code = var.http_redirect_status_code
 
   # WAF-related inputs
-  enable_waf      = true
-  waf_name        = "my-alb-waf"
-  waf_scope       = "REGIONAL"
-  waf_rule_name   = "AWS-AWSManagedRulesCommonRuleSet"
-  waf_metric_name = "albWAF"
+  enable_waf      = var.enable_waf
+  waf_name        = var.waf_name
+  waf_scope       = var.waf_scope
+  waf_rule_name   = var.waf_rule_name
+  waf_metric_name = var.waf_metric_name
 
 }
 
@@ -97,15 +97,15 @@ module "vpc" {
   tags                = var.tags
   vpc_endpoint_sg_id  = module.security_groups.ecs_sg_id 
 }
-resource "null_resource" "wait_for_vpc" {
-  triggers = {
-    vpc_id = module.vpc.vpc_id
-  }
+# resource "null_resource" "wait_for_vpc" {
+#   triggers = {
+#     vpc_id = module.vpc.vpc_id
+#   }
 
-  provisioner "local-exec" {
-    command = "sleep 15"
-  }
-}
+#   provisioner "local-exec" {
+#     command = "sleep 15"
+#   }
+# }
 
 module "ecs" {
   source = "./modules/ecs_fargate"
