@@ -154,10 +154,29 @@ resource "aws_flow_log" "vpc" {
   vpc_id          = aws_vpc.main.id
 }
 resource "aws_kms_key" "cloudwatch_logs" {
-  description             = "KMS key for encrypting CloudWatch logs (VPC)"
+  description             = "KMS key for encrypting CloudWatch logs"
   deletion_window_in_days = 7
   enable_key_rotation     = true
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "key-default-policy"
+    Statement = [
+      {
+        Sid    = "Allow account root full access"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      }
+    ]
+  })
 }
+
+data "aws_caller_identity" "current" {}
+
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/flow-logs"
   retention_in_days = 365

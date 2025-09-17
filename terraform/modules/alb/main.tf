@@ -159,10 +159,29 @@ resource "aws_wafv2_web_acl_logging_configuration" "alb_waf_logging" {
 }
 
 resource "aws_kms_key" "cloudwatch_logs" {
-  description             = "KMS key for encrypting CloudWatch logs (ALB)"
+  description             = "KMS key for encrypting CloudWatch logs"
   deletion_window_in_days = 7
   enable_key_rotation     = true
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "key-default-policy"
+    Statement = [
+      {
+        Sid    = "Allow account root full access"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      }
+    ]
+  })
 }
+
+data "aws_caller_identity" "current" {}
+
 
 resource "aws_cloudwatch_log_group" "waf_logs" {
   name              = "/aws/waf/alb"
