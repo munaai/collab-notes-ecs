@@ -42,9 +42,9 @@ resource "aws_security_group" "alb" {
   }
 }
 
-resource "aws_security_group" "alb" {
-  name        = var.alb_sg_name
-  description = var.alb_sg_description
+resource "aws_security_group" "ecs" {
+  name        = var.ecs_sg_name
+  description = var.ecs_sg_description
   vpc_id      = var.vpc_id
   tags = {
     "checkov:skip=CKV2_AWS_5" = "SG is attached indirectly via ALB/ECS"
