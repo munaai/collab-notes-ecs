@@ -12,6 +12,9 @@ provider "aws" {
   region = var.region
 }
 
+# Get current AWS account details
+data "aws_caller_identity" "current" {}
+
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr_block
   enable_dns_support   = true
@@ -169,7 +172,7 @@ resource "aws_kms_key" "cloudwatch_logs" {
         Sid    = "Allow account root full access"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${var.account_id}:root"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         }
         Action   = "kms:*"
         Resource = "*"

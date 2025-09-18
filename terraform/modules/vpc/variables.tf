@@ -33,7 +33,4 @@ variable "vpc_endpoint_sg_id" {
   type        = string
 }
 
-variable "account_id" {
-  type = string
-}
 

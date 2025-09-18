@@ -8,6 +8,9 @@ terraform {
   }
 }
 
+# Get current AWS account details
+data "aws_caller_identity" "current" {}
+
 resource "aws_lb" "this" {
   name                       = var.alb_name
   load_balancer_type         = "application"
@@ -29,7 +32,6 @@ resource "aws_lb_target_group" "this" {
   protocol    = var.target_group_protocol
   vpc_id      = var.vpc_id
   target_type = "ip"
-  depends_on  = [var.vpc_id]
 
   health_check {
     path                = var.health_check_path
@@ -151,7 +153,7 @@ resource "aws_s3_bucket_policy" "alb_logs_policy" {
           Service = "logdelivery.elasticloadbalancing.amazonaws.com"
         },
         Action   = "s3:PutObject",
-        Resource = "arn:aws:s3:::my-alb-logs-muna/AWSLogs/${var.account_id}/*"
+        Resource = "arn:aws:s3:::my-alb-logs-muna/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
       }
     ]
   })
@@ -176,7 +178,7 @@ resource "aws_kms_key" "cloudwatch_logs" {
         Sid    = "Allow account root full access"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${var.account_id}:root"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         }
         Action   = "kms:*"
         Resource = "*"
