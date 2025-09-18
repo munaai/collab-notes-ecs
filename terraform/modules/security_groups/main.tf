@@ -7,12 +7,14 @@ terraform {
     }
   }
 }
-#checkov:skip=CKV2_AWS_5: SG is attached indirectly via module outputs (alb_sg_id used by ALB module)
 resource "aws_security_group" "alb" {
   name        = var.alb_sg_name
   description = var.alb_sg_description
   vpc_id      = var.vpc_id
   depends_on  = [var.vpc_id]
+  tags = {
+    "checkov:skip=CKV2_AWS_5" = "SG is attached indirectly via ALB/ECS"
+  }
 
   ingress {
     from_port   = var.alb_ingress_http_from_port
@@ -39,11 +41,13 @@ resource "aws_security_group" "alb" {
   }
 }
 
-#checkov:skip=CKV2_AWS_5: SG is attached indirectly via module outputs (alb_sg_id used by ALB module)
 resource "aws_security_group" "alb" {
   name        = var.alb_sg_name
   description = var.alb_sg_description
   vpc_id      = var.vpc_id
+  tags = {
+    "checkov:skip=CKV2_AWS_5" = "SG is attached indirectly via ALB/ECS"
+  }
 
   ingress {
     from_port       = var.ecs_ingress_from_port
