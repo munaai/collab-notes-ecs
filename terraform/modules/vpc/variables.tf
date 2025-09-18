@@ -32,3 +32,8 @@ variable "vpc_endpoint_sg_id" {
   description = "Security group ID to attach to interface VPC endpoints"
   type        = string
 }
+
+variable "account_id" {
+  type = string
+}
+

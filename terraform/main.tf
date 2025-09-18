@@ -59,6 +59,8 @@ module "alb" {
   http_listener_protocol    = var.http_listener_protocol
   http_redirect_status_code = var.http_redirect_status_code
 
+  account_id = data.aws_caller_identity.current.account_id
+
   # WAF-related inputs
   enable_waf      = var.enable_waf
   waf_name        = var.waf_name
@@ -96,6 +98,7 @@ module "vpc" {
   azs                  = var.azs
   tags                 = var.tags
   vpc_endpoint_sg_id   = module.security_groups.ecs_sg_id
+  account_id           = data.aws_caller_identity.current.account_id
 }
 # resource "null_resource" "wait_for_vpc" {
 #   triggers = {

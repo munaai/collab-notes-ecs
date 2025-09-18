@@ -9,6 +9,10 @@ terraform {
     }
   }
 
+  # terraform/data.tf
+  data "aws_caller_identity" "current" {}
+
+
   backend "s3" {
     bucket         = "my-terraform-config-bucket-muna"
     key            = "state/devops-lab/terraform.tfstate"

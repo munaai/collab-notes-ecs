@@ -21,7 +21,6 @@ resource "aws_lb" "this" {
     bucket  = "my-alb-logs-muna"
     enabled = true
   }
-
 }
 
 resource "aws_lb_target_group" "this" {
@@ -109,6 +108,7 @@ resource "aws_wafv2_web_acl" "alb_waf" {
       sampled_requests_enabled   = true
     }
   }
+
   rule {
     name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
     priority = 2
@@ -130,8 +130,8 @@ resource "aws_wafv2_web_acl" "alb_waf" {
       sampled_requests_enabled   = true
     }
   }
-
 }
+
 resource "aws_wafv2_web_acl_association" "alb" {
   count        = var.enable_waf ? 1 : 0
   resource_arn = aws_lb.this.arn
@@ -151,19 +151,17 @@ resource "aws_s3_bucket_policy" "alb_logs_policy" {
           Service = "logdelivery.elasticloadbalancing.amazonaws.com"
         },
         Action   = "s3:PutObject",
-        Resource = "arn:aws:s3:::my-alb-logs-muna/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+        Resource = "arn:aws:s3:::my-alb-logs-muna/AWSLogs/${var.account_id}/*"
       }
     ]
   })
 }
 
-data "aws_caller_identity" "current" {}
 resource "aws_wafv2_web_acl_logging_configuration" "alb_waf_logging" {
   count                   = var.enable_waf ? 1 : 0
   log_destination_configs = [aws_cloudwatch_log_group.waf_logs.arn]
   resource_arn            = aws_wafv2_web_acl.alb_waf[0].arn
 }
-
 
 resource "aws_kms_key" "cloudwatch_logs" {
   description             = "KMS key for encrypting CloudWatch logs"
@@ -178,7 +176,7 @@ resource "aws_kms_key" "cloudwatch_logs" {
         Sid    = "Allow account root full access"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+          AWS = "arn:aws:iam::${var.account_id}:root"
         }
         Action   = "kms:*"
         Resource = "*"
@@ -187,10 +185,8 @@ resource "aws_kms_key" "cloudwatch_logs" {
   })
 }
 
-
 resource "aws_cloudwatch_log_group" "waf_logs" {
   name              = "/aws/waf/alb"
   retention_in_days = 365
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
 }
-

@@ -66,6 +66,7 @@ resource "aws_subnet" "private_2" {
 
   tags = merge(var.tags, { Name = "private-subnet-2" })
 }
+
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
   tags   = merge(var.tags, { Name = "custom-igw" })
@@ -148,11 +149,13 @@ resource "aws_vpc_endpoint" "s3" {
 
   tags = merge(var.tags, { Name = "vpce-s3" })
 }
+
 resource "aws_flow_log" "vpc" {
   log_destination = aws_cloudwatch_log_group.vpc_flow_logs.arn
   traffic_type    = "ALL"
   vpc_id          = aws_vpc.main.id
 }
+
 resource "aws_kms_key" "cloudwatch_logs" {
   description             = "KMS key for encrypting CloudWatch logs"
   deletion_window_in_days = 7
@@ -166,7 +169,7 @@ resource "aws_kms_key" "cloudwatch_logs" {
         Sid    = "Allow account root full access"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+          AWS = "arn:aws:iam::${var.account_id}:root"
         }
         Action   = "kms:*"
         Resource = "*"
@@ -175,11 +178,8 @@ resource "aws_kms_key" "cloudwatch_logs" {
   })
 }
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/flow-logs"
   retention_in_days = 365
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
 }
-
