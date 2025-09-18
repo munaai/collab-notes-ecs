@@ -9,8 +9,6 @@ terraform {
     }
   }
 
-  # terraform/data.tf
-  data "aws_caller_identity" "current" {}
 
 
   backend "s3" {
