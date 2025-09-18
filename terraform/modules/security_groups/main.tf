@@ -13,7 +13,8 @@ resource "aws_security_group" "alb" {
   vpc_id      = var.vpc_id
   depends_on  = [var.vpc_id]
   tags = {
-    "checkov:skip=CKV2_AWS_5" = "SG is attached indirectly via ALB/ECS"
+    "checkov:skip=CKV2_AWS_5"  = "SG is attached indirectly via ALB/ECS"
+    "checkov:skip=CKV_AWS_260" = "HTTP (80) access required for ALB public traffic"
   }
 
   ingress {

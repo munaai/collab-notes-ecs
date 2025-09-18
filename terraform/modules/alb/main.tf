@@ -47,7 +47,7 @@ resource "aws_lb_listener" "https" {
   port              = var.https_listener_port
   protocol          = var.https_listener_protocol
 
-  ssl_policy      = var.ssl_policy
+  ssl_policy      = "ELBSecurityPolicy-TLS-1-2-2017-01"
   certificate_arn = var.certificate_arn
 
   default_action {
@@ -131,6 +131,11 @@ resource "aws_wafv2_web_acl" "alb_waf" {
     }
   }
 
+}
+resource "aws_wafv2_web_acl_association" "alb" {
+  count        = var.enable_waf ? 1 : 0
+  resource_arn = aws_lb.this.arn
+  web_acl_arn  = aws_wafv2_web_acl.alb_waf[0].arn
 }
 
 resource "aws_s3_bucket_policy" "alb_logs_policy" {
