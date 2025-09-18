@@ -159,9 +159,11 @@ resource "aws_s3_bucket_policy" "alb_logs_policy" {
 
 data "aws_caller_identity" "current" {}
 resource "aws_wafv2_web_acl_logging_configuration" "alb_waf_logging" {
+  count                 = var.enable_waf ? 1 : 0
   log_destination_configs = [aws_cloudwatch_log_group.waf_logs.arn]
-  resource_arn            = aws_wafv2_web_acl.alb_waf.arn
+  resource_arn            = aws_wafv2_web_acl.alb_waf[0].arn
 }
+
 
 resource "aws_kms_key" "cloudwatch_logs" {
   description             = "KMS key for encrypting CloudWatch logs"
@@ -184,8 +186,6 @@ resource "aws_kms_key" "cloudwatch_logs" {
     ]
   })
 }
-
-data "aws_caller_identity" "current" {}
 
 
 resource "aws_cloudwatch_log_group" "waf_logs" {
