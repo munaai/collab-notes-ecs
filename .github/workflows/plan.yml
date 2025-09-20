@@ -66,8 +66,9 @@ jobs:
         working-directory: terraform
 
       - name: Terraform Plan
-        run: terraform plan -lock-timeout=300s -var-file="terraform.tfvars" -out=tfplan
+        run: terraform plan -lock=false -var-file="terraform.tfvars" -out=tfplan
         working-directory: terraform
+
 
  
       
