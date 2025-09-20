@@ -55,9 +55,9 @@ module "alb" {
   health_check_unhealthy_threshold = var.health_check_unhealthy_threshold
   health_check_matcher             = var.health_check_matcher
 
-  certificate_arn           = module.acm.certificate_arn
-  https_listener_port       = var.https_listener_port
-  https_listener_protocol   = var.https_listener_protocol
+  certificate_arn         = module.acm.certificate_arn
+  https_listener_port     = var.https_listener_port
+  https_listener_protocol = var.https_listener_protocol
   # ssl_policy                = var.ssl_policy
   http_listener_port        = var.http_listener_port
   http_listener_protocol    = var.http_listener_protocol

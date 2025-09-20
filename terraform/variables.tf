@@ -158,10 +158,10 @@ variable "health_check_matcher" {
   default = "200"
 }
 
-variable "ssl_policy" {
-  type    = string
-  default = "ELBSecurityPolicy-2016-08"
-}
+# variable "ssl_policy" {
+#   type    = string
+#   default = "ELBSecurityPolicy-2016-08"
+# }
 variable "https_listener_port" {
   type    = number
   default = 443
