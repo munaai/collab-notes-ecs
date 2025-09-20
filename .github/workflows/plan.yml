@@ -65,6 +65,13 @@ jobs:
         run: terraform plan -lock=false -var-file="terraform.tfvars" -out=tfplan
         working-directory: terraform
 
+      - name: Upload Terraform Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: terraform/tfplan
+  
+
 
  
       
