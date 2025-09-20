@@ -5,9 +5,9 @@ variable "alb_internal" {
   type    = bool
   default = false
 }
-variable "alb_deletion_protection" {
-  type = bool
-}
+# variable "alb_deletion_protection" {
+#   type = bool
+# }
 variable "alb_security_group_ids" {
   type = list(string)
 }
@@ -60,10 +60,10 @@ variable "certificate_arn" {
   type        = string
 }
 
-variable "ssl_policy" {
-  type    = string
-  default = "ELBSecurityPolicy-2016-08"
-}
+# variable "ssl_policy" {
+#   type    = string
+#   default = "ELBSecurityPolicy-2016-08"
+# }
 variable "https_listener_port" {
   type    = number
   default = 443
@@ -118,4 +118,8 @@ variable "waf_metric_name" {
   default     = "albWAF"
 }
 
+variable "account_id" {
+  type        = string
+  description = "AWS Account ID for resource policies"
+}
 

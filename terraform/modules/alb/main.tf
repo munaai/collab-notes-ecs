@@ -8,9 +8,6 @@ terraform {
   }
 }
 
-# Get current AWS account details
-data "aws_caller_identity" "current" {}
-
 resource "aws_lb" "this" {
   name                       = var.alb_name
   load_balancer_type         = "application"
@@ -178,7 +175,7 @@ resource "aws_kms_key" "cloudwatch_logs" {
         Sid    = "Allow account root full access"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+          AWS = "arn:aws:iam::${var.account_id}:root"
         }
         Action   = "kms:*"
         Resource = "*"
