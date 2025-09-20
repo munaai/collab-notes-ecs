@@ -8,6 +8,9 @@ terraform {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
+
 resource "aws_lb" "this" {
   name                       = var.alb_name
   load_balancer_type         = "application"
@@ -156,6 +159,7 @@ resource "aws_s3_bucket_policy" "alb_logs_policy" {
   })
 }
 
+
 resource "aws_wafv2_web_acl_logging_configuration" "alb_waf_logging" {
   count                   = var.enable_waf ? 1 : 0
   log_destination_configs = [aws_cloudwatch_log_group.waf_logs.arn]
@@ -175,7 +179,7 @@ resource "aws_kms_key" "cloudwatch_logs" {
         Sid    = "Allow account root full access"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${var.account_id}:root"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         }
         Action   = "kms:*"
         Resource = "*"
@@ -183,6 +187,7 @@ resource "aws_kms_key" "cloudwatch_logs" {
     ]
   })
 }
+
 
 resource "aws_cloudwatch_log_group" "waf_logs" {
   name              = "/aws/waf/alb"

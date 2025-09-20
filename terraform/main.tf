@@ -32,17 +32,17 @@ module "iam_roles" {
   policy_name    = var.policy_name
   region         = var.region
   ecr_repo_name  = var.ecr_repo_name
-  account_id     = var.account_id
+  # account_id     = var.account_id
 }
 module "alb" {
   source = "./modules/alb"
 
-  alb_name                = var.alb_name
-  alb_internal            = var.alb_internal
-  alb_deletion_protection = var.alb_deletion_protection
-  alb_security_group_ids  = [module.security_groups.alb_sg_id]
-  public_subnet_ids       = module.vpc.public_subnet_ids
-  vpc_id                  = module.vpc.vpc_id
+  alb_name     = var.alb_name
+  alb_internal = var.alb_internal
+  # alb_deletion_protection = var.alb_deletion_protection
+  alb_security_group_ids = [module.security_groups.alb_sg_id]
+  public_subnet_ids      = module.vpc.public_subnet_ids
+  vpc_id                 = module.vpc.vpc_id
 
   target_group_name     = var.target_group_name
   target_group_protocol = var.target_group_protocol
@@ -58,12 +58,12 @@ module "alb" {
   certificate_arn           = module.acm.certificate_arn
   https_listener_port       = var.https_listener_port
   https_listener_protocol   = var.https_listener_protocol
-  ssl_policy                = var.ssl_policy
+  # ssl_policy                = var.ssl_policy
   http_listener_port        = var.http_listener_port
   http_listener_protocol    = var.http_listener_protocol
   http_redirect_status_code = var.http_redirect_status_code
 
-  account_id = data.aws_caller_identity.current.account_id
+  # account_id = data.aws_caller_identity.current.account_id
 
   # WAF-related inputs
   enable_waf      = var.enable_waf
@@ -102,7 +102,7 @@ module "vpc" {
   azs                  = var.azs
   tags                 = var.tags
   vpc_endpoint_sg_id   = module.security_groups.ecs_sg_id
-  account_id           = data.aws_caller_identity.current.account_id
+  # account_id           = data.aws_caller_identity.current.account_id
 }
 # resource "null_resource" "wait_for_vpc" {
 #   triggers = {

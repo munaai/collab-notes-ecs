@@ -9,6 +9,9 @@ terraform {
   }
 }
 
+# 🔹 Automatically fetch the account ID from AWS credentials
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_role" "this" {
   name = var.role_name
 
@@ -40,7 +43,11 @@ resource "aws_iam_role_policy" "this" {
           "logs:CreateLogGroup"
         ],
         Resource = [
-          format("arn:aws:logs:%s:%s:*", var.region, var.account_id)
+          format(
+            "arn:aws:logs:%s:%s:*",
+            var.region,
+            data.aws_caller_identity.current.account_id
+          )
         ]
       },
       {
@@ -50,7 +57,12 @@ resource "aws_iam_role_policy" "this" {
           "ecr:BatchGetImage"
         ],
         Resource = [
-          format("arn:aws:ecr:%s:%s:repository/%s", var.region, var.account_id, var.ecr_repo_name)
+          format(
+            "arn:aws:ecr:%s:%s:repository/%s",
+            var.region,
+            data.aws_caller_identity.current.account_id,
+            var.ecr_repo_name
+          )
         ]
       },
       {

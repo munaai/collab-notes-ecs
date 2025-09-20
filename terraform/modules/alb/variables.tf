@@ -118,8 +118,8 @@ variable "waf_metric_name" {
   default     = "albWAF"
 }
 
-variable "account_id" {
-  type        = string
-  description = "AWS Account ID for resource policies"
-}
+# variable "account_id" {
+#   type        = string
+#   description = "AWS Account ID for resource policies"
+# }
 

@@ -107,10 +107,10 @@ variable "ecr_repo_name" {
   description = "Name of the ECR repository"
   type        = string
 }
-variable "account_id" {
-  description = "AWS account ID"
-  type        = string
-}
+# variable "account_id" {
+#   description = "AWS account ID"
+#   type        = string
+# }
 
 // ALB
 
@@ -121,9 +121,9 @@ variable "alb_internal" {
   type    = bool
   default = false
 }
-variable "alb_deletion_protection" {
-  type = bool
-}
+# variable "alb_deletion_protection" {
+#   type = bool
+# }
 
 variable "target_group_name" {
   type = string
