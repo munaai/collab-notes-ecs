@@ -32,7 +32,6 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # ✅ Use dawidd6/action-download-artifact instead of actions/download-artifact
       - name: Download Terraform Plan Artifact
         uses: dawidd6/action-download-artifact@v6
         with:

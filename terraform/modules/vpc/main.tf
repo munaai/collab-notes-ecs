@@ -168,6 +168,22 @@ resource "aws_kms_key" "cloudwatch_logs" {
     Id      = "key-default-policy"
     Statement = [
       {
+        "Sid" : "Allow Terraform to manage key",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/terraform-execution-role"
+        },
+        "Action" : [
+          "kms:DescribeKey",
+          "kms:GetKeyPolicy",
+          "kms:PutKeyPolicy",
+          "kms:UpdateKeyDescription",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ],
+        "Resource" : "*"
+      },
+      {
         Sid    = "Allow account root full access"
         Effect = "Allow"
         Principal = {
