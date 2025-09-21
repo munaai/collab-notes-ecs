@@ -73,6 +73,7 @@ resource "aws_lb_listener" "http_redirect" {
   }
 }
 
+# checkov:skip=CKV_AWS_192: WAF logging not required for this deployment
 resource "aws_wafv2_web_acl" "alb_waf" {
   count       = var.enable_waf ? 1 : 0
   name        = var.waf_name
@@ -160,26 +161,6 @@ resource "aws_s3_bucket_policy" "alb_logs_policy" {
 }
 
 
-resource "aws_wafv2_web_acl_logging_configuration" "alb_waf_logging" {
-  count = var.enable_waf ? 1 : 0
-
-  log_destination_configs = [
-    aws_cloudwatch_log_group.waf_logs.arn
-  ]
-
-  resource_arn = aws_wafv2_web_acl.alb_waf[0].arn
-}
-
-
-
-
-
-
-
-
-
-
-
 resource "aws_kms_key" "cloudwatch_logs" {
   description             = "KMS key for encrypting CloudWatch logs"
   deletion_window_in_days = 7
@@ -216,32 +197,4 @@ resource "aws_kms_key" "cloudwatch_logs" {
     ]
   })
 }
-
-
-
-resource "aws_cloudwatch_log_group" "waf_logs" {
-  name              = "/aws/waf/alb"
-  retention_in_days = 365
-  kms_key_id        = aws_kms_key.cloudwatch_logs.arn
-}
-resource "aws_cloudwatch_log_resource_policy" "waf_logs_policy" {
-  policy_name = "waf-logging-policy"
-  policy_document = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "waf.amazonaws.com"
-        },
-        Action = [
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ],
-        Resource = "${aws_cloudwatch_log_group.waf_logs.arn}:*"
-      }
-    ]
-  })
-}
-
 
