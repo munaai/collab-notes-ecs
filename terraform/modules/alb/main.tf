@@ -183,11 +183,26 @@ resource "aws_kms_key" "cloudwatch_logs" {
         },
         "Action" : "kms:*",
         "Resource" : "*"
+      },
+      {
+        "Sid" : "Allow CloudWatch Logs use of the key",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "logs.${var.region}.amazonaws.com"
+        },
+        "Action" : [
+          "kms:Encrypt*",
+          "kms:Decrypt*",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ],
+        "Resource" : "*"
       }
-
     ]
   })
 }
+
 
 
 resource "aws_cloudwatch_log_group" "waf_logs" {

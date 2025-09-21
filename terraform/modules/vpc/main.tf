@@ -177,17 +177,24 @@ resource "aws_kms_key" "cloudwatch_logs" {
         "Resource" : "*"
       },
       {
-        Sid    = "Allow account root full access"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-        }
-        Action   = "kms:*"
-        Resource = "*"
+        "Sid" : "Allow CloudWatch Logs use of the key",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "logs.${var.region}.amazonaws.com"
+        },
+        "Action" : [
+          "kms:Encrypt*",
+          "kms:Decrypt*",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ],
+        "Resource" : "*"
       }
     ]
   })
 }
+
 
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/flow-logs"
