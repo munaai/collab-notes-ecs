@@ -47,5 +47,9 @@ jobs:
         run: terraform apply -auto-approve tfplan
         working-directory: terraform
 
+      - name: Debug - List files
+        run: ls -R terraform
+  
+
       - name: Summary
         run: echo "### Terraform Apply Completed" >> $GITHUB_STEP_SUMMARY
