@@ -223,3 +223,23 @@ resource "aws_cloudwatch_log_group" "waf_logs" {
   retention_in_days = 365
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
 }
+resource "aws_cloudwatch_log_resource_policy" "waf_logs_policy" {
+  policy_name     = "waf-logging-policy"
+  policy_document = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "waf.amazonaws.com"
+        },
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "${aws_cloudwatch_log_group.waf_logs.arn}:*"
+      }
+    ]
+  })
+}
+
