@@ -225,7 +225,7 @@ resource "aws_cloudwatch_log_group" "waf_logs" {
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
 }
 resource "aws_cloudwatch_log_resource_policy" "waf_logs_policy" {
-  policy_name     = "waf-logging-policy"
+  policy_name = "waf-logging-policy"
   policy_document = jsonencode({
     Version = "2012-10-17",
     Statement = [
