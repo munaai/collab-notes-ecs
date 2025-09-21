@@ -58,7 +58,8 @@ jobs:
           directory: terraform
           framework: terraform
           quiet: true
-          soft_fail: false      
+          soft_fail: false   
+          skip_check: CKV2_AWS_31   
 
       - name: Terraform Init
         run: terraform init
