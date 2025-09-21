@@ -123,3 +123,9 @@ variable "waf_metric_name" {
 #   description = "AWS Account ID for resource policies"
 # }
 
+variable "region" {
+  type        = string
+  description = "AWS region"
+  default     = "eu-west-2"
+}
+
