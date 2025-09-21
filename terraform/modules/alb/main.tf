@@ -73,7 +73,7 @@ resource "aws_lb_listener" "http_redirect" {
   }
 }
 
-# checkov:skip=CKV_AWS_192: WAF logging not required for this deployment
+# checkov:skip=CKV2_AWS_31: WAF logging not required for this deployment
 resource "aws_wafv2_web_acl" "alb_waf" {
   count       = var.enable_waf ? 1 : 0
   name        = var.waf_name
