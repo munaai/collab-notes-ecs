@@ -32,14 +32,14 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      # ✅ Use dawidd6/action-download-artifact instead of actions/download-artifact
       - name: Download Terraform Plan Artifact
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v6
         with:
+          workflow: Terraform Plan
+          workflow_conclusion: success
           name: tfplan
           path: terraform
-          run-id: ${{ github.event.workflow_run.id }}
-          repository: ${{ github.repository }}
-
 
       - name: Terraform Init
         run: terraform init
