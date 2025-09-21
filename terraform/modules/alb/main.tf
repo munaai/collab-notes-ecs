@@ -164,11 +164,12 @@ resource "aws_wafv2_web_acl_logging_configuration" "alb_waf_logging" {
   count = var.enable_waf ? 1 : 0
 
   log_destination_configs = [
-    "${aws_cloudwatch_log_group.waf_logs.arn}:*"
+    aws_cloudwatch_log_group.waf_logs.arn
   ]
 
   resource_arn = aws_wafv2_web_acl.alb_waf[0].arn
 }
+
 
 
 
@@ -224,7 +225,7 @@ resource "aws_cloudwatch_log_group" "waf_logs" {
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
 }
 resource "aws_cloudwatch_log_resource_policy" "waf_logs_policy" {
-  policy_name = "waf-logging-policy"
+  policy_name     = "waf-logging-policy"
   policy_document = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -242,4 +243,5 @@ resource "aws_cloudwatch_log_resource_policy" "waf_logs_policy" {
     ]
   })
 }
+
 
