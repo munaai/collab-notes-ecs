@@ -90,27 +90,41 @@ variable "ecs_egress_cidr_blocks" {
 }
 
 // IAM ROLES
-variable "role_name" {
-  description = "IAM role name"
+variable "create_ecs_execution_role" {
+  description = "Whether to create the ECS execution role"
+  type        = bool
+  default     = true
+}
+
+variable "ecs_role_name" {
+  description = "Name of the ECS execution role"
   type        = string
+  default     = "ecs-task-execution-role"
 }
 
-variable "assume_service" {
-  type = string
-}
-
-variable "policy_name" {
-  type = string
+variable "ecs_policy_name" {
+  description = "Name of the inline ECS policy"
+  type        = string
+  default     = "ecs-task-inline-policy"
 }
 
 variable "ecr_repo_name" {
-  description = "Name of the ECR repository"
+  description = "Name of the ECR repository (required if pulling private images)"
   type        = string
+  default     = ""
 }
-# variable "account_id" {
-#   description = "AWS account ID"
-#   type        = string
-# }
+
+variable "create_flow_logs_role" {
+  description = "Whether to create the VPC Flow Logs role"
+  type        = bool
+  default     = true
+}
+
+variable "flow_logs_role_name" {
+  description = "Name of the VPC Flow Logs IAM role"
+  type        = string
+  default     = "vpc-flow-logs-role"
+}
 
 // ALB
 

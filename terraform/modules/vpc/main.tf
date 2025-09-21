@@ -153,10 +153,13 @@ resource "aws_vpc_endpoint" "s3" {
 }
 
 resource "aws_flow_log" "vpc" {
-  log_destination = aws_cloudwatch_log_group.vpc_flow_logs.arn
-  traffic_type    = "ALL"
-  vpc_id          = aws_vpc.main.id
+  log_destination      = aws_cloudwatch_log_group.vpc_flow_logs.arn
+  log_destination_type = "cloud-watch-logs"
+  iam_role_arn         = var.flow_logs_role_arn # new
+  traffic_type         = "ALL"
+  vpc_id               = aws_vpc.main.id
 }
+
 
 resource "aws_kms_key" "cloudwatch_logs" {
   description             = "KMS key for encrypting CloudWatch logs"

@@ -27,13 +27,14 @@ module "security_groups" {
 module "iam_roles" {
   source = "./modules/iam_roles"
 
-  role_name      = var.role_name
-  assume_service = var.assume_service
-  policy_name    = var.policy_name
-  region         = var.region
-  ecr_repo_name  = var.ecr_repo_name
-  # account_id     = var.account_id
+  create_ecs_execution_role = var.create_ecs_execution_role
+  ecs_role_name             = var.ecs_role_name
+  ecs_policy_name           = var.ecs_policy_name
+  ecr_repo_name             = var.ecr_repo_name
+  create_flow_logs_role     = var.create_flow_logs_role
+  flow_logs_role_name       = var.flow_logs_role_name
 }
+
 module "alb" {
   source = "./modules/alb"
 
@@ -102,6 +103,7 @@ module "vpc" {
   azs                  = var.azs
   tags                 = var.tags
   vpc_endpoint_sg_id   = module.security_groups.ecs_sg_id
+  flow_logs_role_arn   = module.iam_roles.flow_logs_role_arn
   # account_id           = data.aws_caller_identity.current.account_id
 }
 # resource "null_resource" "wait_for_vpc" {
