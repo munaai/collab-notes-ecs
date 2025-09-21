@@ -110,7 +110,14 @@ resource "aws_iam_role_policy" "flow_logs" {
         "logs:DescribeLogGroups",
         "logs:DescribeLogStreams"
       ],
-      Resource = "*"
+      Resource = [
+        format(
+          "arn:aws:logs:%s:%s:log-group:/aws/vpc/flow-logs:*",
+          var.region,
+          data.aws_caller_identity.current.account_id
+        )
+      ]
     }]
   })
 }
+
