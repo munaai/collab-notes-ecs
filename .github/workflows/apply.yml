@@ -36,7 +36,7 @@ jobs:
       - name: Download Terraform Plan Artifact
         uses: dawidd6/action-download-artifact@v6
         with:
-          workflow: Terraform Plan
+          workflow: plan.yml
           workflow_conclusion: success
           name: tfplan
           path: terraform
