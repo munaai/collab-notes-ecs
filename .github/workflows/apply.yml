@@ -45,10 +45,13 @@ jobs:
         working-directory: terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve \
-          -var-file="terraform.tfvars" \
-          -var alb_deletion_protection=false tfplan
+        run: |
+          terraform apply -auto-approve \
+            -var-file="terraform.tfvars" \
+            -var alb_deletion_protection=false \
+            tfplan
         working-directory: terraform
+
 
 
       - name: Summary

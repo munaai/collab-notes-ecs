@@ -66,11 +66,13 @@ jobs:
         working-directory: terraform
 
       - name: Terraform Plan
-        run: terraform plan -lock=false \
-          -var-file=./terraform.tfvars \
-          -var alb_deletion_protection=false \
-          -out=tfplan
+        run: |
+          terraform plan -lock=false \
+            -var-file="terraform.tfvars" \
+            -var alb_deletion_protection=false \
+            -out=tfplan
         working-directory: terraform
+
 
 
 
