@@ -138,7 +138,7 @@ variable "alb_internal" {
   default = false
 }
 variable "alb_deletion_protection" {
-  type = bool
+  type    = bool
   default = true
 }
 
