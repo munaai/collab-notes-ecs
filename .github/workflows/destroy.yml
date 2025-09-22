@@ -32,8 +32,10 @@ jobs:
         working-directory: terraform
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve \
-                -var-file="terraform.tfvars" \
-                -var alb_deletion_protection=false
+        run: |
+          terraform destroy -auto-approve \
+            -var-file="terraform.tfvars" \
+            -var alb_deletion_protection=false
         working-directory: terraform
+
 
