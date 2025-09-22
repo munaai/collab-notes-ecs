@@ -89,7 +89,8 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.gw.id
   }
 
-  tags = merge(var.tags, { Name = "public-route-table" })
+  tags       = merge(var.tags, { Name = "public-route-table" })
+  depends_on = [aws_internet_gateway.gw]
 }
 
 resource "aws_route_table_association" "public_1" {
