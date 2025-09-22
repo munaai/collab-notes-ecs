@@ -75,6 +75,9 @@ resource "aws_internet_gateway" "gw" {
   lifecycle {
     prevent_destroy = false
   }
+  depends_on = [
+    module.alb.aws_lb.this
+  ]
   timeouts {
     delete = "5m"
   }
@@ -83,12 +86,12 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+
   tags = merge(var.tags, { Name = "public-route-table" })
-}
-resource "aws_route" "public_internet_access" {
-  route_table_id         = aws_route_table.public.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.gw.id
 }
 
 resource "aws_route_table_association" "public_1" {
