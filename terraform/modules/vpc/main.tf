@@ -72,6 +72,9 @@ resource "aws_subnet" "private_2" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
   tags   = merge(var.tags, { Name = "custom-igw" })
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 
 resource "aws_route_table" "public" {
