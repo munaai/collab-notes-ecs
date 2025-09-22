@@ -80,7 +80,7 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
-  tags       = merge(var.tags, { Name = "public-route-table" })
+  tags = merge(var.tags, { Name = "public-route-table" })
 }
 resource "aws_route" "public_internet_access" {
   route_table_id         = aws_route_table.public.id
