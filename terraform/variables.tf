@@ -139,6 +139,7 @@ variable "alb_internal" {
 }
 variable "alb_deletion_protection" {
   type = bool
+  default = true
 }
 
 variable "target_group_name" {

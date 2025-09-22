@@ -7,6 +7,7 @@ variable "alb_internal" {
 }
 variable "alb_deletion_protection" {
   type = bool
+  default = true
 }
 variable "alb_security_group_ids" {
   type = list(string)
