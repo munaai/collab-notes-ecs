@@ -38,12 +38,12 @@ module "iam_roles" {
 module "alb" {
   source = "./modules/alb"
 
-  alb_name     = var.alb_name
-  alb_internal = var.alb_internal
-  # alb_deletion_protection = var.alb_deletion_protection
-  alb_security_group_ids = [module.security_groups.alb_sg_id]
-  public_subnet_ids      = module.vpc.public_subnet_ids
-  vpc_id                 = module.vpc.vpc_id
+  alb_name                = var.alb_name
+  alb_internal            = var.alb_internal
+  alb_deletion_protection = var.alb_deletion_protection
+  alb_security_group_ids  = [module.security_groups.alb_sg_id]
+  public_subnet_ids       = module.vpc.public_subnet_ids
+  vpc_id                  = module.vpc.vpc_id
 
   target_group_name     = var.target_group_name
   target_group_protocol = var.target_group_protocol

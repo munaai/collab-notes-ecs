@@ -137,9 +137,9 @@ variable "alb_internal" {
   type    = bool
   default = false
 }
-# variable "alb_deletion_protection" {
-#   type = bool
-# }
+variable "alb_deletion_protection" {
+  type = bool
+}
 
 variable "target_group_name" {
   type = string
