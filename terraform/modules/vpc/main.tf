@@ -76,7 +76,7 @@ resource "aws_internet_gateway" "gw" {
     prevent_destroy = false
   }
   depends_on = [
-    module.alb.aws_lb.this
+    module.alb
   ]
   timeouts {
     delete = "5m"
