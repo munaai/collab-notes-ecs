@@ -77,9 +77,8 @@ module "alb" {
 
 // acm
 module "acm" {
-  source         = "./modules/acm"
-  domain_name    = var.record_name
-  hosted_zone_id = var.hosted_zone_id
+  source      = "./modules/acm"
+  domain_name = var.record_name
   tags = {
     Project = "Memos"
     Owner   = "Muna"
@@ -88,11 +87,11 @@ module "acm" {
 
 //route53
 module "route53" {
-  source         = "./modules/route53"
-  hosted_zone_id = var.hosted_zone_id
-  record_name    = var.record_name
-  alb_dns_name   = module.alb.alb_dns_name
-  alb_zone_id    = module.alb.alb_zone_id
+  source = "./modules/route53"
+  # hosted_zone_id = var.hosted_zone_id
+  record_name  = var.record_name
+  alb_dns_name = module.alb.alb_dns_name
+  alb_zone_id  = module.alb.alb_zone_id
 }
 module "vpc" {
   source               = "./modules/vpc"

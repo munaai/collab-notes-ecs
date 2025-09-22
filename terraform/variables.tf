@@ -238,10 +238,10 @@ variable "container_port" {
 }
 
 // route53
-variable "hosted_zone_id" {
-  type        = string
-  description = "Route 53 Hosted Zone ID"
-}
+# variable "hosted_zone_id" {
+#   type        = string
+#   description = "Route 53 Hosted Zone ID"
+# }
 
 variable "record_name" {
   type        = string

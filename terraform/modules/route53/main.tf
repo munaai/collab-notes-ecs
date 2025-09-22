@@ -7,8 +7,12 @@ terraform {
     }
   }
 }
+data "aws_route53_zone" "this" {
+  name         = "munaibrahim.com"
+  private_zone = false
+}
 resource "aws_route53_record" "this" {
-  zone_id = var.hosted_zone_id
+  zone_id = data.aws_route53_zone.this.zone_id
   name    = var.record_name # e.g., app.munaibrahim.com
   type    = var.record_type
 

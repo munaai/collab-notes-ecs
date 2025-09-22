@@ -1,7 +1,7 @@
-variable "hosted_zone_id" {
-  description = "Route 53 Hosted Zone ID for the domain"
-  type        = string
-}
+# variable "hosted_zone_id" {
+#   description = "Route 53 Hosted Zone ID for the domain"
+#   type        = string
+# }
 
 variable "record_name" {
   description = "The record name for the app (e.g., app.munaibrahim.com)"

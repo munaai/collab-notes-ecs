@@ -3,10 +3,10 @@ variable "domain_name" {
   type        = string
 }
 
-variable "hosted_zone_id" {
-  description = "Hosted Zone ID of the domain in Route 53"
-  type        = string
-}
+# variable "hosted_zone_id" {
+#   description = "Hosted Zone ID of the domain in Route 53"
+#   type        = string
+# }
 
 
 variable "tags" {

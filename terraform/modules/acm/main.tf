@@ -8,6 +8,10 @@ terraform {
   }
 }
 
+data "aws_route53_zone" "this" {
+  name         = "munaibrahim.com"
+  private_zone = false
+}
 resource "aws_acm_certificate" "this" {
   domain_name       = var.domain_name
   validation_method = "DNS"
@@ -25,7 +29,7 @@ locals {
 }
 
 resource "aws_route53_record" "cert_validation" {
-  zone_id = var.hosted_zone_id
+  zone_id = data.aws_route53_zone.this.zone_id
   name    = local.validation_option.resource_record_name
   type    = local.validation_option.resource_record_type
   records = [local.validation_option.resource_record_value]
