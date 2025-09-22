@@ -56,10 +56,10 @@ variable "health_check_matcher" {
   default = "200"
 }
 
-variable "certificate_arn" {
-  description = "ARN of the ACM certificate"
-  type        = string
-}
+# variable "certificate_arn" {
+#   description = "ARN of the ACM certificate"
+#   type        = string
+# }
 
 # variable "ssl_policy" {
 #   type    = string

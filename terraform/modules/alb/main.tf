@@ -43,13 +43,18 @@ resource "aws_lb_target_group" "this" {
   }
 }
 
+data "aws_acm_certificate" "app" {
+  domain   = "app.munaibrahim.com"
+  statuses = ["ISSUED"]
+  most_recent = true
+}
+
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.this.arn
   port              = var.https_listener_port
   protocol          = var.https_listener_protocol
-
   ssl_policy      = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn = var.certificate_arn
+  certificate_arn = data.aws_acm_certificate.app.arn
 
   default_action {
     type             = "forward"
