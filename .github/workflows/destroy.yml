@@ -31,15 +31,9 @@ jobs:
         run: terraform init
         working-directory: terraform
 
-      - name: Disable ALB Deletion Protection
-        run: |
-          terraform apply -auto-approve \
-            -target=module.alb.aws_lb.this \
-            -var alb_deletion_protection=false \
-            -var-file="terraform.tfvars"
-        working-directory: terraform
-
-
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve -var-file="terraform.tfvars" -var alb_deletion_protection=false
+        run: terraform destroy -auto-approve \
+                -var-file="terraform.tfvars" \
+                -var alb_deletion_protection=false
         working-directory: terraform
+
