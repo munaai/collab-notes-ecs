@@ -43,6 +43,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
         working-directory: terraform
+        
+      - name: Disable ALB Deletion Protection
+        run: terraform apply -auto-approve -var alb_deletion_protection=false -var-file="terraform.tfvars"
+        working-directory: terraform
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan

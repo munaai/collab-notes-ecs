@@ -75,6 +75,9 @@ resource "aws_internet_gateway" "gw" {
   lifecycle {
     prevent_destroy = false
   }
+  timeouts {
+    delete = "5m"
+  }
 }
 
 resource "aws_route_table" "public" {
