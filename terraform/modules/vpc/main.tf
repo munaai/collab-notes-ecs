@@ -75,6 +75,10 @@ resource "aws_internet_gateway" "gw" {
   lifecycle {
     prevent_destroy = false
   }
+  depends_on = [
+    aws_lb.this, # Ensure ALB is gone first
+    aws_route_table.public
+  ]
 }
 
 resource "aws_route_table" "public" {

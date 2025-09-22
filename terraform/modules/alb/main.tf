@@ -19,9 +19,6 @@ resource "aws_lb" "this" {
   internal                   = var.alb_internal
   enable_deletion_protection = var.alb_deletion_protection
   drop_invalid_header_fields = true
-  lifecycle {
-    ignore_changes = [enable_deletion_protection]
-  }
 
   access_logs {
     bucket  = "my-alb-logs-muna"
