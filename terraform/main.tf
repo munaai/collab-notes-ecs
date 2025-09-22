@@ -103,6 +103,7 @@ module "vpc" {
   tags                 = var.tags
   vpc_endpoint_sg_id   = module.security_groups.ecs_sg_id
   flow_logs_role_arn   = module.iam_roles.flow_logs_role_arn
+  depends_on           = [module.alb]
   # account_id           = data.aws_caller_identity.current.account_id
 }
 # resource "null_resource" "wait_for_vpc" {
