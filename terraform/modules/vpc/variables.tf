@@ -28,17 +28,10 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "vpc_endpoint_sg_id" {
-  description = "Security group ID to attach to interface VPC endpoints"
-  type        = string
-}
 variable "flow_logs_role_arn" {
   description = "IAM role ARN that VPC Flow Logs will assume to publish logs to CloudWatch"
   type        = string
 }
 
-# variable "account_id" {
-#   type        = string
-#   description = "AWS Account ID for resource policies"
-# }
+
 

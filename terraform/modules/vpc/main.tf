@@ -8,7 +8,6 @@ terraform {
   }
 }
 
-
 data "aws_caller_identity" "current" {}
 
 resource "aws_vpc" "main" {
@@ -20,21 +19,17 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_default_security_group" "default" {
-  vpc_id = aws_vpc.main.id
-
+  vpc_id  = aws_vpc.main.id
   ingress = []
   egress  = []
-
-  tags = {
-    Name = "default-sg-locked"
-  }
+  tags    = { Name = "default-sg-locked" }
 }
 
 resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidrs[0]
   availability_zone       = var.azs[0]
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
 
   tags = merge(var.tags, { Name = "public-subnet-1" })
 }
@@ -43,7 +38,7 @@ resource "aws_subnet" "public_2" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidrs[1]
   availability_zone       = var.azs[1]
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
 
   tags = merge(var.tags, { Name = "public-subnet-2" })
 }
@@ -69,22 +64,14 @@ resource "aws_subnet" "private_2" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
   tags   = merge(var.tags, { Name = "custom-igw" })
-  lifecycle {
-    prevent_destroy = false
-  }
-  timeouts {
-    delete = "5m"
-  }
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
-
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.gw.id
   }
-
   tags = merge(var.tags, { Name = "public-route-table" })
 }
 
@@ -98,72 +85,64 @@ resource "aws_route_table_association" "public_2" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route_table" "private" {
+resource "aws_eip" "nat_1" {
+  domain = "vpc"
+  tags   = merge(var.tags, { Name = "nat-eip-1" })
+}
+
+resource "aws_nat_gateway" "nat_1" {
+  allocation_id = aws_eip.nat_1.id
+  subnet_id     = aws_subnet.public_1.id
+  tags          = merge(var.tags, { Name = "nat-gateway-1" })
+  depends_on    = [aws_internet_gateway.gw]
+}
+
+resource "aws_eip" "nat_2" {
+  domain = "vpc"
+  tags   = merge(var.tags, { Name = "nat-eip-2" })
+}
+
+resource "aws_nat_gateway" "nat_2" {
+  allocation_id = aws_eip.nat_2.id
+  subnet_id     = aws_subnet.public_2.id
+  tags          = merge(var.tags, { Name = "nat-gateway-2" })
+  depends_on    = [aws_internet_gateway.gw]
+}
+
+# Private route tables (1 per AZ)
+resource "aws_route_table" "private_1" {
   vpc_id = aws_vpc.main.id
-  tags   = merge(var.tags, { Name = "private-route-table" })
+  tags   = merge(var.tags, { Name = "private-rt-az1" })
+}
+
+resource "aws_route" "private_1_nat" {
+  route_table_id         = aws_route_table.private_1.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat_1.id
 }
 
 resource "aws_route_table_association" "private_1" {
   subnet_id      = aws_subnet.private_1.id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private_1.id
+}
+
+resource "aws_route_table" "private_2" {
+  vpc_id = aws_vpc.main.id
+  tags   = merge(var.tags, { Name = "private-rt-az2" })
+}
+
+resource "aws_route" "private_2_nat" {
+  route_table_id         = aws_route_table.private_2.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat_2.id
 }
 
 resource "aws_route_table_association" "private_2" {
   subnet_id      = aws_subnet.private_2.id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private_2.id
 }
 
-resource "aws_vpc_endpoint" "ecr_api" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${var.region}.ecr.api"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = [aws_subnet.private_1.id, aws_subnet.private_2.id]
-  security_group_ids  = [var.vpc_endpoint_sg_id]
-  private_dns_enabled = true
-
-  tags = merge(var.tags, { Name = "vpce-ecr-api" })
-}
-
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${var.region}.ecr.dkr"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = [aws_subnet.private_1.id, aws_subnet.private_2.id]
-  security_group_ids  = [var.vpc_endpoint_sg_id]
-  private_dns_enabled = true
-
-  tags = merge(var.tags, { Name = "vpce-ecr-dkr" })
-}
-
-resource "aws_vpc_endpoint" "logs" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${var.region}.logs"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = [aws_subnet.private_1.id, aws_subnet.private_2.id]
-  security_group_ids  = [var.vpc_endpoint_sg_id]
-  private_dns_enabled = true
-
-  tags = merge(var.tags, { Name = "vpce-logs" })
-}
-
-resource "aws_vpc_endpoint" "s3" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.${var.region}.s3"
-  vpc_endpoint_type = "Gateway"
-  route_table_ids   = [aws_route_table.private.id]
-
-  tags = merge(var.tags, { Name = "vpce-s3" })
-}
-
-resource "aws_flow_log" "vpc" {
-  log_destination      = aws_cloudwatch_log_group.vpc_flow_logs.arn
-  log_destination_type = "cloud-watch-logs"
-  iam_role_arn         = var.flow_logs_role_arn # new
-  traffic_type         = "ALL"
-  vpc_id               = aws_vpc.main.id
-}
-
-
+# Flow logs with KMS encryption
 resource "aws_kms_key" "cloudwatch_logs" {
   description             = "KMS key for encrypting CloudWatch logs"
   deletion_window_in_days = 7
@@ -171,39 +150,45 @@ resource "aws_kms_key" "cloudwatch_logs" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Id      = "key-default-policy"
     Statement = [
       {
-        "Sid" : "Allow account principals to manage key",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        Sid    = "Allow account principals to manage key",
+        Effect = "Allow",
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         },
-        "Action" : "kms:*",
-        "Resource" : "*"
+        Action   = "kms:*",
+        Resource = "*"
       },
       {
-        "Sid" : "Allow CloudWatch Logs use of the key",
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "logs.${var.region}.amazonaws.com"
+        Sid    = "Allow CloudWatch Logs use of the key",
+        Effect = "Allow",
+        Principal = {
+          Service = "logs.${var.region}.amazonaws.com"
         },
-        "Action" : [
+        Action = [
           "kms:Encrypt*",
           "kms:Decrypt*",
           "kms:ReEncrypt*",
           "kms:GenerateDataKey*",
           "kms:DescribeKey"
         ],
-        "Resource" : "*"
+        Resource = "*"
       }
     ]
   })
 }
 
-
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/flow-logs"
   retention_in_days = 365
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
+}
+
+resource "aws_flow_log" "vpc" {
+  log_destination      = aws_cloudwatch_log_group.vpc_flow_logs.arn
+  log_destination_type = "cloud-watch-logs"
+  iam_role_arn         = var.flow_logs_role_arn
+  traffic_type         = "ALL"
+  vpc_id               = aws_vpc.main.id
 }
