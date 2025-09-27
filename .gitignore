@@ -13,3 +13,4 @@ terraform.tfvars
 .terraform.lock.hcltfplan
 tfplan
 .tfplan
+.terraform.lock.hcl
