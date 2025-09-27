@@ -9,8 +9,6 @@ terraform {
     }
   }
 
-
-
   backend "s3" {
     bucket         = "my-terraform-config-bucket-muna"
     key            = "state/devops-lab/terraform.tfstate"
@@ -18,6 +16,7 @@ terraform {
     encrypt        = true
     dynamodb_table = "terraform-locks"
   }
+
 }
 
 provider "aws" {
