@@ -11,3 +11,5 @@ terraform.tfvars
 .DS_Store
 *.DS_Store
 .terraform.lock.hcltfplan
+tfplan
+.tfplan
