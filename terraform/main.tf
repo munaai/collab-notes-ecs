@@ -57,14 +57,10 @@ module "alb" {
   health_check_matcher             = var.health_check_matcher
   https_listener_port              = var.https_listener_port
   https_listener_protocol          = var.https_listener_protocol
-  # ssl_policy                = var.ssl_policy
   http_listener_port        = var.http_listener_port
   http_listener_protocol    = var.http_listener_protocol
   http_redirect_status_code = var.http_redirect_status_code
 
-  # account_id = data.aws_caller_identity.current.account_id
-
-  # WAF-related inputs
   enable_waf      = var.enable_waf
   waf_name        = var.waf_name
   waf_scope       = var.waf_scope
@@ -73,20 +69,11 @@ module "alb" {
 
 }
 
-// acm
-# module "acm" {
-#   source      = "./modules/acm"
-#   domain_name = var.record_name
-#   tags = {
-#     Project = "Memos"
-#     Owner   = "Muna"
-#   }
-# }
+
 
 //route53
 module "route53" {
   source = "./modules/route53"
-  # hosted_zone_id = var.hosted_zone_id
   record_name  = var.record_name
   alb_dns_name = module.alb.alb_dns_name
   alb_zone_id  = module.alb.alb_zone_id
@@ -99,19 +86,8 @@ module "vpc" {
   private_subnet_cidrs = var.private_subnet_cidrs
   azs                  = var.azs
   tags                 = var.tags
-  vpc_endpoint_sg_id   = module.security_groups.ecs_sg_id
   flow_logs_role_arn   = module.iam_roles.flow_logs_role_arn
-  # account_id           = data.aws_caller_identity.current.account_id
 }
-# resource "null_resource" "wait_for_vpc" {
-#   triggers = {
-#     vpc_id = module.vpc.vpc_id
-#   }
-
-#   provisioner "local-exec" {
-#     command = "sleep 15"
-#   }
-# }
 
 module "ecs" {
   source = "./modules/ecs_fargate"
