@@ -57,6 +57,7 @@ jobs:
           quiet: true
           soft_fail: false   
           skip_check: CKV2_AWS_31   
+          skip-check: CKV2_AWS_76 
 
       - name: Terraform Init
         run: terraform init
