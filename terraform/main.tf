@@ -57,9 +57,9 @@ module "alb" {
   health_check_matcher             = var.health_check_matcher
   https_listener_port              = var.https_listener_port
   https_listener_protocol          = var.https_listener_protocol
-  http_listener_port        = var.http_listener_port
-  http_listener_protocol    = var.http_listener_protocol
-  http_redirect_status_code = var.http_redirect_status_code
+  http_listener_port               = var.http_listener_port
+  http_listener_protocol           = var.http_listener_protocol
+  http_redirect_status_code        = var.http_redirect_status_code
 
   enable_waf      = var.enable_waf
   waf_name        = var.waf_name
@@ -73,7 +73,7 @@ module "alb" {
 
 //route53
 module "route53" {
-  source = "./modules/route53"
+  source       = "./modules/route53"
   record_name  = var.record_name
   alb_dns_name = module.alb.alb_dns_name
   alb_zone_id  = module.alb.alb_zone_id
