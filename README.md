@@ -81,6 +81,7 @@ Then visit: http://localhost:8081
 - Destroys all infrastructure managed by Terraform when no longer required
 
 ## Here is a demonstration
+
 ### Domain page
 <!-- <p align="center">
   <img src="images/Front-end.png" alt="architechtural diagram" style="width:800px"/>
