@@ -10,8 +10,7 @@ terraform {
 
 data "aws_caller_identity" "current" {}
 
-# checkov:skip=CKV2_AWS_76: WAF Log4j rule not required for this deployment
-resource "aws_lb" "this" {
+resource "aws_lb" "this" { # checkov:skip=CKV2_AWS_76: WAF Log4j rule not required for this deployment
   name                       = var.alb_name
   load_balancer_type         = "application"
   subnets                    = var.public_subnet_ids
