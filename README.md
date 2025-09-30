@@ -57,7 +57,7 @@ yarn dev   # http://localhost:5173
 cd ..
 go mod download
 go run ./bin/memos  
-Then visit: http://localhost:5173 (frontend) — it will connect to http://localhost:8081 (backend).
+Then visit: http://localhost:5173  — It will connect to http://localhost:8081 (backend).
 </pre>  
 ### Option 2: Run Using Docker
 <pre>
