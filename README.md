@@ -50,7 +50,21 @@ This setup automates the deployment of the application on **AWS ECS Fargate**, r
 
 ## Local App Setup 💻
 ### Option 1: Run Locally Without Docker
+<pre>
+cd web
+yarn install --frozen-lockfile
+yarn dev   # http://localhost:5173
+cd ..
+go mod download
+go run ./bin/memos  
+Then visit: http://localhost:5173 (frontend) — it will connect to http://localhost:8081 (backend).
+</pre>  
 ### Option 2: Run Using Docker
+<pre>
+docker build -t collab-notes .
+docker run -p 8081:8081 collab-notes
+Then visit: http://localhost:8081 
+</pre>
 ## Deployment Workflow
 ### Docker Build and Push
 - Builds the Docker image
