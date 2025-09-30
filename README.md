@@ -7,6 +7,9 @@ This setup automates the deployment of the application on **AWS ECS Fargate**, r
 
 
 ##  Architecture diagram
+<p align="center">
+  <img src="images/arcitechture-diagram.gif" alt="architechtural diagram" style="width:700px"/>
+</p>
 
 ##  Features
 - Fully automated infrastructure using **Terraform** (with terraform workspaces)  
