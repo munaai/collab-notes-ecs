@@ -260,10 +260,10 @@ variable "service_name" {
   type        = string
 }
 
-variable "desired_count" {
-  description = "Number of desired ECS tasks"
-  type        = number
-}
+# variable "desired_count" {
+#   description = "Number of desired ECS tasks"
+#   type        = number
+# }
 
 # variable "cluster_insight_name" {
 #   description = "name of the cluster setting name"

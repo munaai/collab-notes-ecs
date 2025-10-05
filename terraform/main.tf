@@ -97,7 +97,7 @@ module "vpc" {
   tags = merge(var.tags, {
     Environment = local.env
   })
-  flow_logs_role_arn   = module.iam_roles.flow_logs_role_arn
+  flow_logs_role_arn = module.iam_roles.flow_logs_role_arn
 }
 
 # --- ECS ---
