@@ -51,6 +51,7 @@ resource "aws_ecs_task_definition" "this" {
       name      = "${var.container_name}-${terraform.workspace}"
       image     = var.image_url
       essential = true
+      readonlyRootFilesystem = true
       portMappings = [
         {
           containerPort = var.container_port
