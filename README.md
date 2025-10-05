@@ -95,15 +95,20 @@ Then visit: http://localhost:8081
 
 ### Docker Build and Push to ECR
 <!-- <p align="center">
-  <img src="images/build-image.png" alt="architechtural diagram" style="width:800px"/>
+  <img src="images/Docker.png" alt="architechtural diagram" style="width:800px"/>
 </p> -->
 
-### Terraform Deploy
+### Terraform Plan
 <!-- <p align="center">
-  <img src="images/planandapply.png" alt="architechtural diagram" style="width:800px"/>
+  <img src="images/plan.png" alt="architechtural diagram" style="width:800px"/>
+</p> -->
+
+### Terraform Apply
+<!-- <p align="center">
+  <img src="images/apply.png" alt="architechtural diagram" style="width:800px"/>
 </p> -->
 
 ### Teraform Destroy
 <!-- <p align="center">
-  <img src="images/terraform-destroy.png" alt="architechtural diagram" style="width:800px"/>
+  <img src="images/destroy.png" alt="architechtural diagram" style="width:800px"/>
 </p> -->

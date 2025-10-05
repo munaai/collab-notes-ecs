@@ -13,6 +13,10 @@ variable "desired_count" {
   type        = number
 }
 
+variable "task_role_arn" {
+  description = "IAM role that the task itself assumes for permissions (e.g., access to S3, DynamoDB)"
+  type        = string
+}
 # variable "cluster_insight_name" {
 #   description = "name of the cluster setting name"
 #   type        = string

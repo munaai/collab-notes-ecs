@@ -5,7 +5,7 @@ COPY web/ ./
 RUN yarn install --frozen-lockfile
 RUN yarn build
 
-# Stage 2: Backend (Go)
+# Backend (Go)
 FROM golang:1.25-alpine AS backend
 WORKDIR /app
 RUN apk add --no-cache git
