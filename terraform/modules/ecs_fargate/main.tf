@@ -9,7 +9,7 @@ terraform {
 }
 
 resource "aws_ecs_cluster" "this" {
-  name = var.cluster_name
+  name = "${var.cluster_name}-${terraform.workspace}"
 
   setting {
     name  = "containerInsights"
@@ -18,30 +18,28 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_ecs_service" "this" {
-  name            = var.service_name
+  name            = "${var.service_name}-${terraform.workspace}"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.this.arn
   desired_count   = var.desired_count
 
   network_configuration {
-    subnets          = var.subnet_ids         # list of subnet IDs
-    security_groups  = var.security_group_ids # list of security group IDs
+    subnets          = var.subnet_ids
+    security_groups  = var.security_group_ids
     assign_public_ip = false
   }
 
-
   load_balancer {
     target_group_arn = var.target_group_arn
-    container_name   = var.container_name
+    container_name   = "${var.container_name}-${terraform.workspace}"
     container_port   = var.container_port
   }
 
   launch_type = "FARGATE"
-
 }
 
 resource "aws_ecs_task_definition" "this" {
-  family                   = var.task_family
+  family                   = "${var.task_family}-${terraform.workspace}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = var.task_cpu
@@ -50,7 +48,7 @@ resource "aws_ecs_task_definition" "this" {
 
   container_definitions = jsonencode([
     {
-      name      = var.container_name
+      name      = "${var.container_name}-${terraform.workspace}"
       image     = var.image_url
       essential = true
       portMappings = [

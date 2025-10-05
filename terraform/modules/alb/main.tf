@@ -11,7 +11,7 @@ terraform {
 data "aws_caller_identity" "current" {}
 
 resource "aws_lb" "this" {
-  name                       = var.alb_name
+  name                       = "${var.alb_name}-${terraform.workspace}"
   load_balancer_type         = "application"
   subnets                    = var.public_subnet_ids
   security_groups            = var.alb_security_group_ids
@@ -26,7 +26,7 @@ resource "aws_lb" "this" {
 }
 
 resource "aws_lb_target_group" "this" {
-  name        = var.target_group_name
+  name        = "${var.target_group_name}-${terraform.workspace}"
   port        = var.container_port
   protocol    = var.target_group_protocol
   vpc_id      = var.vpc_id
@@ -77,12 +77,11 @@ resource "aws_lb_listener" "http_redirect" {
   }
 }
 
-# checkov:skip=CKV2_AWS_31: WAF logging not required for this deployment
 resource "aws_wafv2_web_acl" "alb_waf" {
   count       = var.enable_waf ? 1 : 0
-  name        = var.waf_name
+  name        = "${var.waf_name}-${terraform.workspace}"
   scope       = var.waf_scope
-  description = "WAF for ALB"
+  description = "WAF for ALB (${terraform.workspace})"
 
   default_action {
     allow {}
@@ -90,12 +89,12 @@ resource "aws_wafv2_web_acl" "alb_waf" {
 
   visibility_config {
     cloudwatch_metrics_enabled = true
-    metric_name                = var.waf_metric_name
+    metric_name                = "${var.waf_metric_name}-${terraform.workspace}"
     sampled_requests_enabled   = true
   }
 
   rule {
-    name     = var.waf_rule_name
+    name     = "${var.waf_rule_name}-${terraform.workspace}"
     priority = 1
 
     override_action {
@@ -164,9 +163,8 @@ resource "aws_s3_bucket_policy" "alb_logs_policy" {
   })
 }
 
-
 resource "aws_kms_key" "cloudwatch_logs" {
-  description             = "KMS key for encrypting CloudWatch logs"
+  description             = "KMS key for encrypting CloudWatch logs (${terraform.workspace})"
   deletion_window_in_days = 7
   enable_key_rotation     = true
 
@@ -201,4 +199,207 @@ resource "aws_kms_key" "cloudwatch_logs" {
     ]
   })
 }
+
+# terraform {
+#   required_version = ">= 1.5.0"
+#   required_providers {
+#     aws = {
+#       source  = "hashicorp/aws"
+#       version = "~> 5.0"
+#     }
+#   }
+# }
+
+# data "aws_caller_identity" "current" {}
+
+# resource "aws_lb" "this" {
+#   name                       = var.alb_name
+#   load_balancer_type         = "application"
+#   subnets                    = var.public_subnet_ids
+#   security_groups            = var.alb_security_group_ids
+#   internal                   = var.alb_internal
+#   enable_deletion_protection = var.alb_deletion_protection
+#   drop_invalid_header_fields = true
+
+#   access_logs {
+#     bucket  = "my-alb-logs-muna"
+#     enabled = true
+#   }
+# }
+
+# resource "aws_lb_target_group" "this" {
+#   name        = var.target_group_name
+#   port        = var.container_port
+#   protocol    = var.target_group_protocol
+#   vpc_id      = var.vpc_id
+#   target_type = "ip"
+
+#   health_check {
+#     path                = var.health_check_path
+#     interval            = var.health_check_interval
+#     timeout             = var.health_check_timeout
+#     healthy_threshold   = var.health_check_healthy_threshold
+#     unhealthy_threshold = var.health_check_unhealthy_threshold
+#     matcher             = var.health_check_matcher
+#   }
+# }
+
+# data "aws_acm_certificate" "app" {
+#   domain      = "app.munaibrahim.com"
+#   statuses    = ["ISSUED"]
+#   most_recent = true
+# }
+
+# resource "aws_lb_listener" "https" {
+#   load_balancer_arn = aws_lb.this.arn
+#   port              = var.https_listener_port
+#   protocol          = var.https_listener_protocol
+#   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+#   certificate_arn   = data.aws_acm_certificate.app.arn
+
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.this.arn
+#   }
+# }
+
+# resource "aws_lb_listener" "http_redirect" {
+#   load_balancer_arn = aws_lb.this.arn
+#   port              = var.http_listener_port
+#   protocol          = var.http_listener_protocol
+
+#   default_action {
+#     type = "redirect"
+
+#     redirect {
+#       port        = var.https_listener_port
+#       protocol    = "HTTPS"
+#       status_code = var.http_redirect_status_code
+#     }
+#   }
+# }
+
+# resource "aws_wafv2_web_acl" "alb_waf" {
+#   count       = var.enable_waf ? 1 : 0
+#   name        = var.waf_name
+#   scope       = var.waf_scope
+#   description = "WAF for ALB"
+
+#   default_action {
+#     allow {}
+#   }
+
+#   visibility_config {
+#     cloudwatch_metrics_enabled = true
+#     metric_name                = var.waf_metric_name
+#     sampled_requests_enabled   = true
+#   }
+
+#   rule {
+#     name     = var.waf_rule_name
+#     priority = 1
+
+#     override_action {
+#       none {}
+#     }
+
+#     statement {
+#       managed_rule_group_statement {
+#         name        = "AWSManagedRulesCommonRuleSet"
+#         vendor_name = "AWS"
+#       }
+#     }
+
+#     visibility_config {
+#       cloudwatch_metrics_enabled = true
+#       metric_name                = "commonRules"
+#       sampled_requests_enabled   = true
+#     }
+#   }
+
+#   rule {
+#     name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+#     priority = 2
+
+#     override_action {
+#       none {}
+#     }
+
+#     statement {
+#       managed_rule_group_statement {
+#         name        = "AWSManagedRulesKnownBadInputsRuleSet"
+#         vendor_name = "AWS"
+#       }
+#     }
+
+#     visibility_config {
+#       cloudwatch_metrics_enabled = true
+#       metric_name                = "KnownBadInputs"
+#       sampled_requests_enabled   = true
+#     }
+#   }
+# }
+
+# resource "aws_wafv2_web_acl_association" "alb" {
+#   count        = var.enable_waf ? 1 : 0
+#   resource_arn = aws_lb.this.arn
+#   web_acl_arn  = aws_wafv2_web_acl.alb_waf[0].arn
+# }
+
+# resource "aws_s3_bucket_policy" "alb_logs_policy" {
+#   bucket = "my-alb-logs-muna"
+
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Sid    = "AllowALBLogs",
+#         Effect = "Allow",
+#         Principal = {
+#           Service = "logdelivery.elasticloadbalancing.amazonaws.com"
+#         },
+#         Action   = "s3:PutObject",
+#         Resource = "arn:aws:s3:::my-alb-logs-muna/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+#       }
+#     ]
+#   })
+# }
+
+
+# resource "aws_kms_key" "cloudwatch_logs" {
+#   description             = "KMS key for encrypting CloudWatch logs"
+#   deletion_window_in_days = 7
+#   enable_key_rotation     = true
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Id      = "key-default-policy"
+#     Statement = [
+#       {
+#         "Sid" : "Allow account principals to manage key",
+#         "Effect" : "Allow",
+#         "Principal" : {
+#           "AWS" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+#         },
+#         "Action" : "kms:*",
+#         "Resource" : "*"
+#       },
+#       {
+#         "Sid" : "Allow CloudWatch Logs use of the key",
+#         "Effect" : "Allow",
+#         "Principal" : {
+#           "Service" : "logs.${var.region}.amazonaws.com"
+#         },
+#         "Action" : [
+#           "kms:Encrypt*",
+#           "kms:Decrypt*",
+#           "kms:ReEncrypt*",
+#           "kms:GenerateDataKey*",
+#           "kms:DescribeKey"
+#         ],
+#         "Resource" : "*"
+#       }
+#     ]
+#   })
+# }
 

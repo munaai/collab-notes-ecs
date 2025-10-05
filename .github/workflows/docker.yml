@@ -1,9 +1,11 @@
 name: Docker Build & Push
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - dev
+      - staging
+      - main
   workflow_dispatch:
 
 env:
@@ -34,17 +36,17 @@ jobs:
 
       - name: Create ECR repository if it does not exist
         run: |
-              aws ecr describe-repositories \
-                --repository-names $ECR_REPOSITORY \
-                --region $AWS_REGION \
-              || aws ecr create-repository \
-                --repository-name $ECR_REPOSITORY \
-                --region $AWS_REGION
+          aws ecr describe-repositories \
+            --repository-names $ECR_REPOSITORY \
+            --region $AWS_REGION \
+          || aws ecr create-repository \
+            --repository-name $ECR_REPOSITORY \
+            --region $AWS_REGION
 
       - name: Build Docker image
         run: docker build -f ./app/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$COMMIT_SHA ./app
 
-      - name: Scan Docker image for vulnerabilities with Trivy
+      - name: Scan Docker image for vulnerabilities
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
