@@ -1,23 +1,18 @@
 name: Terraform Plan
 
 on:
-  push:
-    branches:
-      - dev
-      - staging
-      - main
   workflow_run:
     workflows: ["Docker Build & Push"]
     types:
       - completed
+  workflow_dispatch:
 
 env:
   AWS_REGION: eu-west-2
-  WORKSPACE: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
 
 jobs:
   terraform:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -78,7 +73,7 @@ jobs:
         with:
           name: tfplan
           path: terraform/tfplan
-          
+
 # name: Terraform Plan
 
 # on:

@@ -5,19 +5,14 @@ on:
     workflows: ["Terraform Plan"]
     types:
       - completed
-  push:
-    branches:
-      - dev
-      - staging
-      - main
+  workflow_dispatch:
 
 env:
   AWS_REGION: eu-west-2
-  WORKSPACE: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
 
 jobs:
   terraform:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -54,8 +49,8 @@ jobs:
         working-directory: terraform
 
       - name: Summary
-        run: echo "### Terraform Apply Completed for $WORKSPACE environment" >> $GITHUB_STEP_SUMMARY
-        
+        run: echo "### Terraform Apply Completed" >> $GITHUB_STEP_SUMMARY
+
 # name: Terraform Apply
 
 # on:

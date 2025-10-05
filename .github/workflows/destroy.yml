@@ -48,7 +48,7 @@ jobs:
             -var-file="terraform.tfvars" \
             -var alb_deletion_protection=false
         working-directory: terraform
-        
+
 # name: Terraform Destroy
 
 # on:
