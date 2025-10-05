@@ -9,6 +9,7 @@ on:
 
 env:
   AWS_REGION: eu-west-2
+  WORKSPACE: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
 
 jobs:
   terraform:
