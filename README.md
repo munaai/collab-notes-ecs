@@ -82,6 +82,7 @@ Then visit: http://localhost:8081
 
 ## Here is a demonstration
 
+
 ### Domain page
 <!-- <p align="center">
   <img src="images/Front-end.png" alt="architechtural diagram" style="width:800px"/>
