@@ -94,21 +94,21 @@ Then visit: http://localhost:8081
 </p> -->
 
 ### Docker Build and Push to ECR
-<!-- <p align="center">
-  <img src="images/Docker.png" alt="architechtural diagram" style="width:800px"/>
-</p> -->
+<p align="center">
+  <img src="images/Docker.png" alt="docker pipeline" style="width:800px"/>
+</p>
 
 ### Terraform Plan
-<!-- <p align="center">
+<p align="center">
   <img src="images/plan.png" alt="architechtural diagram" style="width:800px"/>
-</p> -->
+</p>
 
 ### Terraform Apply
-<!-- <p align="center">
+<p align="center">
   <img src="images/apply.png" alt="architechtural diagram" style="width:800px"/>
-</p> -->
+</p>
 
 ### Teraform Destroy
-<!-- <p align="center">
+<p align="center">
   <img src="images/destroy.png" alt="architechtural diagram" style="width:800px"/>
-</p> -->
+</p>
