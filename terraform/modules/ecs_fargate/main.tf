@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "this" {
       name      = "${var.container_name}"
       image     = var.image_url
       essential = true
-      readonlyRootFilesystem = true
+      readonlyRootFilesystem = false
       portMappings = [
         {
           containerPort = var.container_port
