@@ -69,13 +69,18 @@ Then visit: http://localhost:8081
 ### Docker Build and Push
 - Builds the Docker image
 - Performs a security scan using Trivy
+- Uses a **non-root user** in the Dockerfile to enhance container security.  
 - Pushes the image to Amazon ECR
 
-### Terraform Plan and Apply
-- Runs after a successful Docker build or when manually triggered.
-- Sets up AWS credentials and downloads terraform.tfvars from S3.
-- Runs Terraform formatting check, linter, plan, and apply.
-- Automatically provisions or updates infrastructure on AWS.
+### Terraform Plan
+- Runs after a successful Docker build or when manually triggered.  
+- Configures AWS credentials and downloads terraform.tfvars from **S3**.  
+- Runs **Terraform fmt**, **TFLint**, and **Checkov** for validation and security checks.  
+- Executes terraform plan and uploads the plan as an artifact.
+
+### Terraform Apply
+- Runs automatically after a successful **Terraform Plan** or when triggered manually.  
+- Applies the Terraform configuration to **provision or update AWS infrastructure**.
 
 ### Terraform Destroy
 - Destroys all infrastructure managed by Terraform when no longer required
