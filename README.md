@@ -84,14 +84,14 @@ Then visit: http://localhost:8081
 
 
 ### Domain page
-<!-- <p align="center">
-  <img src="images/Front-end.png" alt="architechtural diagram" style="width:800px"/>
-</p> -->
+<p align="center">
+  <img src="images/main-page.png" alt="architechtural diagram" style="width:800px"/>
+</p>
 
 ### SSL certificate
-<!-- <p align="center">
-  <img src="images/ssl-certificate.png" alt="architechtural diagram" style="width:800px"/>
-</p> -->
+<p align="center">
+  <img src="images/certificate.png" alt="architechtural diagram" style="width:800px"/>
+</p>
 
 ### Docker Build and Push to ECR
 <p align="center">
