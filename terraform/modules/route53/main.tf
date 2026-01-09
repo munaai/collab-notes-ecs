@@ -11,14 +11,9 @@ data "aws_route53_zone" "this" {
   name         = "munaibrahim.com"
   private_zone = false
 }
-resource "aws_route53_record" "this" {
+data "aws_route53_record" "existing" {
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = var.record_name # e.g., app.munaibrahim.com
-  type    = var.record_type
-
-  alias {
-    name                   = var.alb_dns_name
-    zone_id                = var.alb_zone_id
-    evaluate_target_health = true
-  }
+  name    = "app.munaibrahim.com"
+  type    = "A"
 }
+
