@@ -28,23 +28,23 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Download tfvars from S3
-        run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/terraform.tfvars
+        run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/app/app.tfvars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
-        working-directory: terraform
+        working-directory: terraform/app
 
       - name: Select Terraform Workspace
         run: |
           terraform workspace select $WORKSPACE || terraform workspace new $WORKSPACE
-        working-directory: terraform
+        working-directory: terraform/app
 
       - name: Terraform Destroy
         run: |
           terraform destroy -auto-approve \
-            -var-file="terraform.tfvars" \
+            -var-file="app.tfvars" \
             -var alb_deletion_protection=false
-        working-directory: terraform
+        working-directory: terraform/app

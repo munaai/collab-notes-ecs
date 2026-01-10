@@ -28,29 +28,29 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Download tfvars file from S3
-        run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/terraform.tfvars
+        run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/app/app.tfvars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
-        working-directory: terraform
+        working-directory: terraform/app
 
       - name: Select Terraform Workspace
         run: |
           terraform workspace select $WORKSPACE || terraform workspace new $WORKSPACE
-        working-directory: terraform
+        working-directory: terraform/app
 
       - name: Terraform Format Check
         run: terraform fmt -check -diff
-        working-directory: terraform
+        working-directory: terraform/app
 
       - name: Run TFLint
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-          tflint --init --chdir=terraform
-          tflint --chdir=terraform
+          tflint --init --chdir=terraform/app
+          tflint --chdir=terraform/app
 
       - name: Install Checkov (pinned version)
         run: pip install checkov==3.2.450
@@ -63,13 +63,13 @@ jobs:
       - name: Terraform Plan
         run: |
           terraform plan -lock=false \
-            -var-file="terraform.tfvars" \
+            -var-file="app.tfvars" \
             -var alb_deletion_protection=false \
             -out=tfplan
-        working-directory: terraform
+        working-directory: terraform/app
 
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
-          path: terraform/tfplan
+          path: terraform/app/tfplan
