@@ -4,47 +4,47 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Which environment to destroy (dev, staging, prod)"
+        description: "Which environment to destroy (dev or prod)"
         required: true
         default: dev
 
 env:
   AWS_REGION: eu-west-2
-  WORKSPACE: ${{ github.event.inputs.environment }}
 
 jobs:
   terraform-destroy:
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::985539771340:role/github-actions-terraform
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Download tfvars from S3
-        run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/app/app.tfvars
+        run: |
+          aws s3 cp \
+            s3://my-terraform-config-bucket-muna/terraform.tfvars \
+            terraform/app/${{ github.event.inputs.environment }}/app.tfvars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
-        working-directory: terraform/app
-
-      - name: Select Terraform Workspace
-        run: |
-          terraform workspace select $WORKSPACE || terraform workspace new $WORKSPACE
-        working-directory: terraform/app
+        working-directory: terraform/app/${{ github.event.inputs.environment }}
 
       - name: Terraform Destroy
         run: |
           terraform destroy -auto-approve \
             -var-file="app.tfvars" \
             -var alb_deletion_protection=false
-        working-directory: terraform/app
+        working-directory: terraform/app/${{ github.event.inputs.environment }}

@@ -9,67 +9,64 @@ on:
 
 env:
   AWS_REGION: eu-west-2
-  WORKSPACE: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
-
+  
 jobs:
   terraform:
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::985539771340:role/github-actions-terraform
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Download tfvars file from S3
-        run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/app/app.tfvars
+        run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/app/prod/app.tfvars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
-        working-directory: terraform/app
-
-      - name: Select Terraform Workspace
-        run: |
-          terraform workspace select $WORKSPACE || terraform workspace new $WORKSPACE
-        working-directory: terraform/app
+        working-directory: terraform/app/prod
 
       - name: Terraform Format Check
         run: terraform fmt -check -diff
-        working-directory: terraform/app
+        working-directory: terraform/app/prod
 
       - name: Run TFLint
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-          tflint --init --chdir=terraform/app
-          tflint --chdir=terraform/app
+          tflint --init --chdir=terraform/app/prod
+          tflint --chdir=terraform/app/prod
 
       - name: Install Checkov (pinned version)
         run: pip install checkov==3.2.450
 
       - name: Run Checkov
         run: |
-          checkov -d terraform --quiet --framework terraform \
+          checkov -d terraform/app/prod --quiet --framework terraform \
           --skip-check CKV2_AWS_31,CKV2_AWS_76,CKV_AWS_336
 
       - name: Terraform Plan
         run: |
-          terraform plan -lock=false \
+          terraform plan \
             -var-file="app.tfvars" \
             -var alb_deletion_protection=false \
             -out=tfplan
-        working-directory: terraform/app
+        working-directory: terraform/app/prod
 
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
-          path: terraform/app/tfplan
+          path: terraform/app/prod/tfplan
