@@ -8,9 +8,12 @@ output "account_id" {
   value = data.aws_caller_identity.current.account_id
 }
 
+terraform {
+  backend "s3" {}
+}
 # --- Security Groups ---
 module "security_groups" {
-  source = "./modules/security_groups"
+  source = "../security_groups"
 
   alb_sg_name                 = "${var.alb_sg_name}-${local.env}"
   alb_sg_description          = var.alb_sg_description
@@ -34,7 +37,7 @@ module "security_groups" {
 
 # --- IAM Roles ---
 module "iam_roles" {
-  source = "./modules/iam_roles"
+  source = "../iam_roles"
 
   create_ecs_execution_role = var.create_ecs_execution_role
   ecs_role_name             = "${var.ecs_role_name}-${local.env}"
@@ -46,7 +49,7 @@ module "iam_roles" {
 
 # --- ALB ---
 module "alb" {
-  source = "./modules/alb"
+  source = "../alb"
 
   alb_name                = "${var.alb_name}-${local.env}"
   alb_internal            = var.alb_internal
@@ -80,7 +83,7 @@ module "alb" {
 
 # --- Route53 
 module "route53" {
-  source       = "./modules/route53"
+  source       = "../route53"
   record_name  = var.record_name
   alb_dns_name = module.alb.alb_dns_name
   alb_zone_id  = module.alb.alb_zone_id
@@ -88,7 +91,7 @@ module "route53" {
 
 # --- VPC ---
 module "vpc" {
-  source               = "./modules/vpc"
+  source               = "../vpc"
   region               = var.region
   vpc_cidr_block       = var.vpc_cidr_block
   public_subnet_cidrs  = var.public_subnet_cidrs
@@ -102,7 +105,7 @@ module "vpc" {
 
 # --- ECS ---
 module "ecs" {
-  source             = "./modules/ecs_fargate"
+  source             = "../ecs_fargate"
   cluster_name       = "${var.cluster_name}-${local.env}"
   service_name       = "${var.service_name}-${local.env}"
   desired_count      = local.env == "prod" ? 1 : 1
