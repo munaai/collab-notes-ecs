@@ -12,6 +12,10 @@ resource "aws_iam_openid_connect_provider" "github" {
   thumbprint_list = [
     "6938fd4d98bab03faadb97b34396831e3780aea1"
   ]
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 data "aws_iam_policy_document" "github_actions_assume_role" {
@@ -46,6 +50,10 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
 resource "aws_iam_role" "github_actions" {
   name               = "github-actions-terraform"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "github_actions_admin" {

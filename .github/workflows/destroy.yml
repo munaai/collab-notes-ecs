@@ -1,4 +1,4 @@
-name: Terraform Destroy
+name: Terragrunt Destroy
 
 on:
   workflow_dispatch:
@@ -6,13 +6,16 @@ on:
       environment:
         description: "Which environment to destroy (dev or prod)"
         required: true
-        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
 
 env:
   AWS_REGION: eu-west-2
 
 jobs:
-  terraform-destroy:
+  terragrunt-destroy:
     runs-on: ubuntu-latest
 
     permissions:
@@ -20,7 +23,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials (OIDC)
@@ -29,22 +32,20 @@ jobs:
           role-to-assume: arn:aws:iam::985539771340:role/github-actions-terraform
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Download tfvars from S3
-        run: |
-          aws s3 cp \
-            s3://my-terraform-config-bucket-muna/terraform.tfvars \
-            terraform/app/${{ github.event.inputs.environment }}/app.tfvars
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: terraform/app/${{ github.event.inputs.environment }}
-
-      - name: Terraform Destroy
+      - name: Install Terragrunt
         run: |
-          terraform destroy -auto-approve \
-            -var-file="app.tfvars" \
-            -var alb_deletion_protection=false
-        working-directory: terraform/app/${{ github.event.inputs.environment }}
+          TG_VERSION=0.56.0
+          curl -Lo terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TG_VERSION}/terragrunt_linux_amd64
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/terragrunt
+
+      - name: Terragrunt Init
+        working-directory: terraform/terragrunt/${{ github.event.inputs.environment }}
+        run: terragrunt init
+
+      - name: Terragrunt Destroy
+        working-directory: terraform/terragrunt/${{ github.event.inputs.environment }}
+        run: terragrunt destroy -auto-approve

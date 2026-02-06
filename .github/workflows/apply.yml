@@ -1,17 +1,17 @@
-name: Terraform Apply
+name: Terragrunt Apply (prod)
 
 on:
   workflow_run:
-    workflows: ["Terraform Plan"]
-    types:
-      - completed
+    workflows: ["Terragrunt Plan (prod)"]
+    types: [completed]
+
   workflow_dispatch:
 
 env:
   AWS_REGION: eu-west-2
- 
+
 jobs:
-  terraform:
+  terragrunt-apply:
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
@@ -20,7 +20,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials (OIDC)
@@ -29,25 +29,24 @@ jobs:
           role-to-assume: arn:aws:iam::985539771340:role/github-actions-terraform
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Download tfvars file from S3
-        run: aws s3 cp s3://my-terraform-config-bucket-muna/terraform.tfvars terraform/app/prod/app.tfvars
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: terraform/app/prod
+      - name: Install Terragrunt
+        run: |
+          TG_VERSION=0.56.0
+          curl -Lo terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TG_VERSION}/terragrunt_linux_amd64
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/terragrunt
 
-      - name: Download Terraform Plan Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan
-          path: terraform/app/prod/tfplan
+      - name: Terragrunt Init (prod)
+        working-directory: terraform/terragrunt/prod
+        run: terragrunt init
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
-        working-directory: terraform/app/prod
+      - name: Terragrunt Apply (prod)
+        working-directory: terraform/terragrunt/prod
+        run: terragrunt apply -auto-approve
 
       - name: Summary
-        run: echo "### Terraform Apply Completed" >> $GITHUB_STEP_SUMMARY
+        run: |
+          echo "### 🚀 Terragrunt Apply (prod) completed successfully" >> $GITHUB_STEP_SUMMARY
