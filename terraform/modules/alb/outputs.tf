@@ -10,14 +10,7 @@ output "target_group_arn" {
   value = aws_lb_target_group.this.arn
 }
 
-# output "waf_log_group_arn" {
-#   value = aws_cloudwatch_log_group.waf_logs.arn
-# }
-
-
-
-
 output "waf_acl_arn" {
-  value = aws_wafv2_web_acl.alb_waf[0].arn
+  value = try(aws_wafv2_web_acl.alb_waf[0].arn, null)
 }
 

@@ -82,8 +82,15 @@ module "alb" {
 }
 
 # --- Route53 
+data "aws_route53_zone" "this" {
+  name         = "munaibrahim.com"
+  private_zone = false
+}
+
 module "route53" {
-  source       = "../route53"
+  source = "../route53"
+
+  zone_id      = data.aws_route53_zone.this.zone_id
   record_name  = var.record_name
   alb_dns_name = module.alb.alb_dns_name
   alb_zone_id  = module.alb.alb_zone_id

@@ -1,25 +1,19 @@
-# variable "hosted_zone_id" {
-#   description = "Route 53 Hosted Zone ID for the domain"
-#   type        = string
-# }
-
-variable "record_name" {
-  description = "The record name for the app (e.g., app.munaibrahim.com)"
+variable "zone_id" {
   type        = string
+  description = "Route53 hosted zone ID"
 }
 
-variable "record_type" {
-  description = "Record type (usually 'A' for ALB alias)"
+variable "record_name" {
   type        = string
-  default     = "A"
+  description = "DNS record name (e.g. app.example.com)"
 }
 
 variable "alb_dns_name" {
-  description = "DNS name of the ALB"
   type        = string
+  description = "ALB DNS name"
 }
 
 variable "alb_zone_id" {
-  description = "Hosted zone ID of the ALB"
   type        = string
+  description = "ALB hosted zone ID"
 }
