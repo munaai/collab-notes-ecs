@@ -1,0 +1,72 @@
+name: Terragrunt Plan (prod)
+
+on:
+  workflow_run:
+    workflows: ["Docker Build & Push"]
+    types: [completed]
+
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-west-2
+
+jobs:
+  terragrunt-plan:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::985539771340:role/github-actions-terraform
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Install Terragrunt
+        run: |
+          TG_VERSION=0.56.0
+          curl -Lo terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TG_VERSION}/terragrunt_linux_amd64
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/terragrunt
+
+      - name: Terragrunt Init (prod)
+        working-directory: terraform/terragrunt/prod
+        run: terragrunt init
+
+      - name: Terragrunt Format Check
+        working-directory: terraform
+        run: terraform fmt -check -recursive
+
+      - name: Run TFLint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          tflint --init
+          tflint terraform
+
+      - name: Install Checkov
+        run: pip install checkov==3.2.450
+
+      - name: Run Checkov
+        run: |
+          checkov -d terraform/modules --quiet --framework terraform \
+          --skip-check CKV2_AWS_31,CKV2_AWS_76,CKV_AWS_336
+
+      - name: Terragrunt Plan (prod)
+        working-directory: terraform/terragrunt/prod
+        run: terragrunt plan -out=tfplan
+
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terragrunt-plan-prod
+          path: terraform/terragrunt/prod/tfplan

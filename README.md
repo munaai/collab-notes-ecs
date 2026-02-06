@@ -3,7 +3,7 @@
 A collaborative, real-time note editor where multiple users can edit and view simultaneously.
 Updates are synchronised instantly across all clients, ensuring a smooth collaboration experience.
 
-This setup automates the deployment of the application on **AWS ECS Fargate**, removing the need for manual resource provisioning through the AWS Console. By using **Terraform** and **GitHub Actions**, the entire infrastructure and deployment process is **repeatable, consistent, and efficient** — reducing human error and saving time across development and operations.
+This setup automates the deployment of the application on **AWS ECS Fargate**, removing the need for manual resource provisioning through the AWS Console. By using **Terraform** and **GitHub Actions**, the entire infrastructure and deployment process is **repeatable, consistent, and efficient** - reducing human error and saving time across development and operations.
 
 
 ##  Architecture diagram
