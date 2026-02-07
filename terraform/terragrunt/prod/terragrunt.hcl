@@ -33,7 +33,7 @@ inputs = {
 
   alb_name                = "app-alb-prod"
   alb_internal            = false
-  alb_deletion_protection = true
+  alb_deletion_protection = false
   target_group_name       = "app-tg-prod"
 
   enable_waf = true
