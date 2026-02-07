@@ -24,7 +24,6 @@ inputs = {
   alb_ingress_http_to_port    = 80
   alb_ingress_https_from_port = 443
   alb_ingress_https_to_port   = 443
-  alb_ingress_cidr_blocks     = ["0.0.0.0/0"]
 
   ecs_sg_name        = "ecs-sg"
   ecs_sg_description = "Allow ECS tasks to receive traffic from ALB"

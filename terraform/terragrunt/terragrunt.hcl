@@ -30,6 +30,8 @@ inputs = {
   region = local.aws_region
   azs    = ["eu-west-2a", "eu-west-2b"]
 
+   alb_ingress_cidr_blocks     = ["0.0.0.0/0"]
+
   # --- Networking protocols ---
   ingress_protocol = "tcp"
   egress_protocol  = "-1"
