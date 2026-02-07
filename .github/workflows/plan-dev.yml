@@ -70,9 +70,3 @@ jobs:
       - name: Terragrunt Plan (dev)
         working-directory: terraform/terragrunt/dev
         run: terragrunt plan --terragrunt-non-interactive -out=tfplan
-
-      - name: Upload Plan Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: terragrunt-plan-dev
-          path: terraform/terragrunt/dev/tfplan
