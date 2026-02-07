@@ -2,14 +2,6 @@ name: Terragrunt Destroy
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: "Which environment to destroy (dev or prod)"
-        required: true
-        type: choice
-        options:
-          - dev
-          - prod
 
 env:
   AWS_REGION: eu-west-2
@@ -48,4 +40,4 @@ jobs:
 
       - name: Terragrunt Destroy
         working-directory: terraform/terragrunt/${{ github.event.inputs.environment }}
-        run: terragrunt destroy -auto-approve
+        terragrunt destroy --terragrunt-non-interactive -auto-approve
