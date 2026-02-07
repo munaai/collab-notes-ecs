@@ -57,7 +57,7 @@ jobs:
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
           tflint --init
-          tflint terraform
+          tflint --chdir=terraform/modules
 
       - name: Install Checkov
         run: pip install checkov==3.2.450

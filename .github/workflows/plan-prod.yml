@@ -41,7 +41,7 @@ jobs:
 
       - name: Terragrunt Init (prod)
         working-directory: terraform/terragrunt/prod
-        run: terragrunt init
+        run: terragrunt init --terragrunt-non-interactive
 
       - name: Terragrunt Format Check
         working-directory: terraform
@@ -51,7 +51,7 @@ jobs:
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
           tflint --init
-          tflint terraform
+          tflint --chdir=terraform/modules
 
       - name: Install Checkov
         run: pip install checkov==3.2.450
@@ -63,7 +63,7 @@ jobs:
 
       - name: Terragrunt Plan (prod)
         working-directory: terraform/terragrunt/prod
-        run: terragrunt plan -out=tfplan
+        run: terragrunt plan --terragrunt-non-interactive -out=tfplan
 
       - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4
