@@ -2,8 +2,9 @@ locals {
   aws_region = "eu-west-2"
 }
 
-# ---- Remote state (shared) ----
-
+# --------------------
+# Remote state (shared)
+# --------------------
 remote_state {
   backend = "s3"
 
@@ -23,20 +24,25 @@ remote_state {
   }
 }
 
-# ---- Shared inputs (all environments) ----
-
+# --------------------
+# Shared inputs (ALL envs)
+# --------------------
 inputs = {
-  # --- Region / AZs ---
+  # Region / AZs
   region = local.aws_region
   azs    = ["eu-west-2a", "eu-west-2b"]
 
-   alb_ingress_cidr_blocks     = ["0.0.0.0/0"]
+  # ALB security group
+  alb_ingress_http_from_port  = 80
+  alb_ingress_http_to_port    = 80
+  alb_ingress_https_from_port = 443
+  alb_ingress_https_to_port   = 443
+  alb_ingress_cidr_blocks     = ["0.0.0.0/0"]
 
-  # --- Networking protocols ---
   ingress_protocol = "tcp"
   egress_protocol  = "-1"
 
-  # --- ALB health checks ---
+  # ALB health checks
   health_check_path                = "/"
   health_check_interval            = 30
   health_check_timeout             = 5
@@ -44,7 +50,7 @@ inputs = {
   health_check_unhealthy_threshold = 2
   health_check_matcher             = "200"
 
-  # --- ALB listeners ---
+  # ALB listeners
   http_listener_port        = 80
   http_listener_protocol    = "HTTP"
   http_redirect_status_code = "HTTP_301"
@@ -54,23 +60,26 @@ inputs = {
 
   target_group_protocol = "HTTP"
 
-  # --- ECS security group ---
+  # ECS security group
   ecs_ingress_from_port  = 8081
   ecs_ingress_to_port    = 8081
   ecs_egress_from_port   = 0
   ecs_egress_to_port     = 0
   ecs_egress_cidr_blocks = ["0.0.0.0/0"]
 
-  # --- ECS task sizing ---
-  task_cpu    = "256"
-  task_memory = "512"
+  # ECS container + task sizing
+  container_port = 8081
+  task_cpu       = "256"
+  task_memory    = "512"
 }
 
-# ---- Provider ----
-
+# --------------------
+# Provider (generated)
+# --------------------
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite"
+
   contents  = <<EOF
 terraform {
   required_version = ">= 1.5.0"
