@@ -38,4 +38,8 @@ jobs:
 
       - name: Terragrunt Destroy (prod)
         working-directory: terraform/terragrunt/prod
-        run: terragrunt destroy --terragrunt-non-interactive -auto-approve
+        run: |
+          terragrunt destroy \
+            --terragrunt-non-interactive \
+            -auto-approve \
+            -var="protect_from_destroy=false"
