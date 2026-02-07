@@ -63,6 +63,10 @@ resource "aws_subnet" "private_2" {
 
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
+  depends_on = [
+    aws_nat_gateway.nat_1,
+    aws_nat_gateway.nat_2
+  ]
   tags   = merge(var.tags, { Name = "custom-igw" })
 }
 
