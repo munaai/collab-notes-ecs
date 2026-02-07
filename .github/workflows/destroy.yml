@@ -43,3 +43,4 @@ jobs:
             --terragrunt-non-interactive \
             -auto-approve \
             -var="protect_from_destroy=false"
+            -var="alb_deletion_protection=false"
