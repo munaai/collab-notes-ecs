@@ -14,9 +14,10 @@ env:
 
 jobs:
   terragrunt-plan:
-    if: >
+    if: |
+      github.event_name == 'workflow_dispatch' ||
       github.event_name == 'pull_request' ||
-      github.event.workflow_run.conclusion == 'success'
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
 
     runs-on: ubuntu-latest
 
