@@ -7,13 +7,19 @@ locals {
 remote_state {
   backend = "s3"
 
+  disable_init = false
+
   config = {
     bucket         = "my-terraform-config-bucket-muna"
     region         = local.aws_region
     encrypt        = true
     dynamodb_table = "terraform-locks"
+    key            = "${path_relative_to_include()}/terraform.tfstate"
+  }
 
-    key = "${path_relative_to_include()}/terraform.tfstate"
+  generate = {
+    path      = "backend.tf"
+    if_exists = "overwrite"
   }
 }
 
