@@ -47,7 +47,7 @@ jobs:
 
       - name: Terragrunt Init (dev)
         working-directory: terraform/terragrunt/dev
-        run: terragrunt init
+        run: terragrunt init --terragrunt-non-interactive
 
       - name: Terragrunt Format Check
         working-directory: terraform
@@ -69,7 +69,7 @@ jobs:
 
       - name: Terragrunt Plan (dev)
         working-directory: terraform/terragrunt/dev
-        run: terragrunt plan -out=tfplan
+        run: terragrunt plan --terragrunt-non-interactive -out=tfplan
 
       - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4
