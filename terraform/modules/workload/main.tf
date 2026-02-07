@@ -8,9 +8,6 @@ output "account_id" {
   value = data.aws_caller_identity.current.account_id
 }
 
-terraform {
-  backend "s3" {}
-}
 # --- Security Groups ---
 module "security_groups" {
   source = "../security_groups"
