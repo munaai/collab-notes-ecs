@@ -12,7 +12,7 @@ This setup automates the deployment of the application on **AWS ECS Fargate**, r
 </p>
 
 ##  Features
-- Fully automated infrastructure using **Terraform** (with terraform workspaces)  
+- Fully automated infrastructure using Terraform, orchestrated via Terragrunt
 - Docker container pushed to Amazon ECR
 - ECS Fargate service behind an ALB with HTTPS
 - **AWS WAF** protection for enhanced security  
@@ -20,7 +20,7 @@ This setup automates the deployment of the application on **AWS ECS Fargate**, r
 - SSL certificate issued via ACM and validated through Route 53
 - **GitHub Actions workflows** for:  
   - Docker image build & push  
-  - Terraform plan, apply, and destroy  
+  - Terragrunt plan, apply, and destroy  
 
 ## Infrastructure Management with Terragrunt
 
