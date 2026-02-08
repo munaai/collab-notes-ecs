@@ -22,29 +22,57 @@ This setup automates the deployment of the application on **AWS ECS Fargate**, r
   - Docker image build & push  
   - Terraform plan, apply, and destroy  
 
+## Infrastructure Management with Terragrunt
+
+This project uses **Terragrunt** to manage multiple Terraform environments (dev and prod) cleanly and safely.
+
+Terragrunt centralises shared configuration such as remote state, provider settings, and common inputs, while allowing environment-specific values to be defined explicitly. This reduces duplication, prevents configuration drift, and makes environment isolation clearer.
+
+All infrastructure changes are executed via **Terragrunt in CI/CD**, not by running Terraform directly.  
+
 
 ## Project Structure
 <pre>
-./
+collab-notes-ecs/
+├── .github/
+│   └── workflows/
+│       ├── docker.yml          # Build, scan, and push Docker image to ECR
+│       ├── plan-dev.yml        # Terragrunt plan (dev)
+│       ├── plan-prod.yml       # Terragrunt plan (prod)
+│       ├── apply.yml           # Terragrunt apply (prod only)
+│       └── destroy.yml         # Terragrunt destroy (manual)
+│
 ├── app/
-│   └── Dockerfile
-├── terraform/
-│   ├── main.tf
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   └── src/                    # Application source code
+│
+├── bootstrap/
+│   ├── backend.tf              # S3 backend & DynamoDB state lock
 │   ├── provider.tf
+│   ├── main.tf
 │   ├── variables.tf
-│   └── modules/
-│       ├── alb/
-│       ├── ecs_fargate/
-│       ├── iam_roles/
-│       ├── route53/
-│       ├── security_groups/
-│       └── vpc/
-└── .github/
-    └── workflows/
-        ├── apply.yml
-        ├── destroy.yml
-        ├── docker.yml
-        └── plan.yml
+│   └── outputs.tf
+│
+├── terraform/
+│   ├── modules/                # Reusable Terraform modules
+│   │   ├── vpc/
+│   │   ├── alb/
+│   │   ├── ecs_fargate/
+│   │   ├── iam_roles/
+│   │   ├── route53/
+│   │   └── security_groups/
+│   │
+│   ├── workload/               # Root Terraform module
+│   │   ├── main.tf
+│   │   └── variables.tf
+│   │
+│   └── terragrunt/
+│       ├── root.hcl            # Shared config (state, provider, common inputs)
+│       ├── dev/
+│       │   └── terragrunt.hcl  # Dev environment config
+│       └── prod/
+│           └── terragrunt.hcl  # Prod environment config
 
 </pre>
 
@@ -65,25 +93,38 @@ docker build -t collab-notes .
 docker run -p 8081:8081 collab-notes
 Then visit: http://localhost:8081 
 </pre>
+
 ## Deployment Workflow
+
 ### Docker Build and Push
-- Builds the Docker image
-- Performs a security scan using Trivy
-- Uses a **non-root user** in the Dockerfile to enhance container security.  
-- Pushes the image to Amazon ECR
+- Builds the application Docker image
+- Scans the image using **Trivy**
+- Uses a **non-root user** in the Dockerfile for improved container security
+- Pushes the image to **Amazon ECR**
 
-### Terraform Plan
-- Runs after a successful Docker build or when manually triggered.  
-- Configures AWS credentials and downloads terraform.tfvars from **S3**.  
-- Runs **Terraform fmt**, **TFLint**, and **Checkov** for validation and security checks.  
-- Executes terraform plan and uploads the plan as an artifact.
+### Terragrunt Plan (Dev)
+- Runs on pull requests or when manually triggered
+- Configures AWS credentials using **OIDC**
+- Runs **Terraform fmt**, **TFLint**, and **Checkov**
+- Executes **`terragrunt plan`** against the **dev** environment
+- Used to validate infrastructure changes before promotion to prod
 
-### Terraform Apply
-- Runs automatically after a successful **Terraform Plan** or when triggered manually.  
-- Applies the Terraform configuration to **provision or update AWS infrastructure**.
+### Terragrunt Plan (Prod)
+- Runs after a successful Docker build or when manually triggered
+- Configures AWS credentials using **OIDC**
+- Runs **Terraform fmt**, **TFLint**, and **Checkov**
+- Executes **`terragrunt plan`** against the **prod** environment
+- Ensures production changes are reviewed before apply
 
-### Terraform Destroy
-- Destroys all infrastructure managed by Terraform when no longer required
+### Terragrunt Apply (Prod Only)
+- Runs after a successful **Terragrunt Plan (Prod)** or when manually triggered
+- Applies infrastructure changes using **`terragrunt apply`**
+- Provisions or updates AWS infrastructure in **production only**
+
+### Terragrunt Destroy
+- Manually triggered workflow
+- Destroys all infrastructure managed by **Terragrunt**
+- Used for controlled teardown of AWS resources
 
 ## Here is a demonstration
 
@@ -103,17 +144,17 @@ Then visit: http://localhost:8081
   <img src="images/Docker.png" alt="docker pipeline" style="width:800px"/>
 </p>
 
-### Terraform Plan
+### Terragrunt Plan (Prod)
 <p align="center">
   <img src="images/plan.png" alt="architechtural diagram" style="width:800px"/>
 </p>
 
-### Terraform Apply
+### Terragrunt Apply
 <p align="center">
   <img src="images/apply.png" alt="architechtural diagram" style="width:800px"/>
 </p>
 
-### Teraform Destroy
+### Teragrunt Destroy
 <p align="center">
   <img src="images/destroy.png" alt="architechtural diagram" style="width:800px"/>
 </p>
