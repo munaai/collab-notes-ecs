@@ -22,7 +22,7 @@ This setup automates the deployment of the application on **AWS ECS Fargate**, r
   - Docker image build & push  
   - Terragrunt plan, apply, and destroy  
 
-## Infrastructure Management with Terragrunt
+## Terragrunt
 
 This project uses **Terragrunt** to manage multiple Terraform environments (dev and prod) cleanly and safely.
 
