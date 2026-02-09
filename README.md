@@ -141,20 +141,20 @@ Then visit: http://localhost:8081
 
 ### Docker Build and Push to ECR
 <p align="center">
-  <img src="images/Docker.png" alt="docker pipeline" style="width:800px"/>
+  <img src="images/dockerbuild-push.png" alt="docker pipeline" style="width:800px"/>
 </p>
 
 ### Terragrunt Plan (Prod)
 <p align="center">
-  <img src="images/plan.png" alt="architechtural diagram" style="width:800px"/>
+  <img src="images/terragrunt-plan.png" alt="plan" style="width:800px"/>
 </p>
 
 ### Terragrunt Apply
 <p align="center">
-  <img src="images/apply.png" alt="architechtural diagram" style="width:800px"/>
+  <img src="images/terragrunt-apply.png" alt="apply" style="width:800px"/>
 </p>
 
 ### Teragrunt Destroy
 <p align="center">
-  <img src="images/destroy.png" alt="architechtural diagram" style="width:800px"/>
+  <img src="images/Terragrunt-destroy.png" alt="architechtural diagram" style="width:800px"/>
 </p>
