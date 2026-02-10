@@ -73,3 +73,24 @@ resource "aws_security_group" "ecs" {
     description = "Allow ECS tasks to make outbound requests"
   }
 }
+
+resource "aws_security_group" "rds" {
+  name        = var.rds_sg_name
+  description = var.rds_sg_description
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description     = var.rds_ingress_description
+    from_port       = var.rds_port
+    to_port         = var.rds_port
+    protocol        = var.rds_protocol
+    security_groups = [aws_security_group.ecs.id]
+  }
+
+  egress {
+    from_port   = var.rds_egress_from_port
+    to_port     = var.rds_egress_to_port
+    protocol    = var.rds_egress_protocol
+    cidr_blocks = var.rds_egress_cidr_blocks
+  }
+}

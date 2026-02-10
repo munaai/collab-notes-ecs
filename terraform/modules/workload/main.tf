@@ -30,6 +30,10 @@ module "security_groups" {
   ecs_egress_from_port   = var.ecs_egress_from_port
   ecs_egress_to_port     = var.ecs_egress_to_port
   ecs_egress_cidr_blocks = var.ecs_egress_cidr_blocks
+
+  rds_sg_name        = var.rds_sg_name
+  rds_sg_description = var.rds_sg_description
+  rds_port           = var.rds_port
 }
 
 # --- IAM Roles ---
@@ -124,4 +128,35 @@ module "ecs" {
   target_group_arn   = module.alb.target_group_arn
   subnet_ids         = module.vpc.private_subnet_ids
   security_group_ids = [module.security_groups.ecs_sg_id]
+}
+
+# --- RDS
+module "rds" {
+  source = "../rds"
+
+  # Identifiers
+  db_identifier = var.db_identifier
+
+  # Engine
+  db_engine            = var.db_engine
+  db_engine_version    = var.db_engine_version
+  db_instance_class    = var.db_instance_class
+  db_allocated_storage = var.db_allocated_storage
+
+  # Credentials / DB
+  db_name     = var.db_name
+  db_username = var.db_username
+  db_password = var.db_password
+
+  # Networking
+  private_subnet_ids   = module.vpc.private_subnet_ids
+  db_security_group_id = module.security_groups.rds_security_group_id
+
+  # Behaviour
+  db_publicly_accessible     = var.db_publicly_accessible
+  db_backup_retention_period = var.db_backup_retention_period
+  db_skip_final_snapshot     = var.db_skip_final_snapshot
+  db_deletion_protection     = var.db_deletion_protection
+
+  tags = var.tags
 }

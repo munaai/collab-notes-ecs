@@ -63,10 +63,6 @@ resource "aws_subnet" "private_2" {
 
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
-  depends_on = [
-    aws_nat_gateway.nat_1,
-    aws_nat_gateway.nat_2
-  ]
   tags   = merge(var.tags, { Name = "custom-igw" })
 }
 
@@ -97,9 +93,6 @@ resource "aws_eip" "nat_1" {
 resource "aws_nat_gateway" "nat_1" {
   allocation_id = aws_eip.nat_1.id
   subnet_id     = aws_subnet.public_1.id
-  lifecycle {
-  create_before_destroy = false
-}
   tags          = merge(var.tags, { Name = "nat-gateway-1" })
 }
 
@@ -111,9 +104,6 @@ resource "aws_eip" "nat_2" {
 resource "aws_nat_gateway" "nat_2" {
   allocation_id = aws_eip.nat_2.id
   subnet_id     = aws_subnet.public_2.id
-  lifecycle {
-  create_before_destroy = false
-}
   tags          = merge(var.tags, { Name = "nat-gateway-2" })
 }
 

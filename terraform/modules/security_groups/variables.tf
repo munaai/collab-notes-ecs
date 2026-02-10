@@ -55,3 +55,49 @@ variable "ingress_protocol" {
 variable "egress_protocol" {
   type = string
 }
+
+variable "rds_sg_name" {
+  type        = string
+  description = "RDS security group name"
+}
+
+variable "rds_sg_description" {
+  type        = string
+  description = "RDS security group description"
+}
+
+variable "rds_port" {
+  type        = number
+  description = "Postgres port"
+  default     = 5432
+}
+
+variable "rds_protocol" {
+  type        = string
+  default     = "tcp"
+}
+
+variable "rds_ingress_description" {
+  type        = string
+  default     = "Postgres access from ECS only"
+}
+
+variable "rds_egress_from_port" {
+  type    = number
+  default = 0
+}
+
+variable "rds_egress_to_port" {
+  type    = number
+  default = 0
+}
+
+variable "rds_egress_protocol" {
+  type    = string
+  default = "-1"
+}
+
+variable "rds_egress_cidr_blocks" {
+  type    = list(string)
+  default = ["0.0.0.0/0"]
+}
