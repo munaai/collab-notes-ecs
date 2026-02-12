@@ -17,16 +17,6 @@ variable "task_role_arn" {
   description = "IAM role that the task itself assumes for permissions (e.g., access to S3, DynamoDB)"
   type        = string
 }
-# variable "cluster_insight_name" {
-#   description = "name of the cluster setting name"
-#   type        = string
-# }
-
-# variable "cluster_insight_value" {
-#   description = "name of the cluster setting value"
-#   type        = string
-# }
-
 variable "container_name" {
   description = "name of the container"
   type        = string
@@ -71,3 +61,13 @@ variable "subnet_ids" {
 variable "security_group_ids" {
   type = list(string)
 }
+
+variable "db_secret_arn" {
+  description = "ARN of the Secrets Manager secret containing DB credentials"
+  type        = string
+}
+variable "environment" {
+  description = "Environment name (dev or prod)"
+  type        = string
+}
+

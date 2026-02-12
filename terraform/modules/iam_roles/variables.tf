@@ -39,3 +39,7 @@ variable "flow_logs_role_name" {
   type        = string
   default     = "vpc-flow-logs-role"
 }
+variable "secrets_manager_arns" {
+  type        = list(string)
+  description = "ARNs of Secrets Manager secrets ECS tasks can read"
+}

@@ -85,10 +85,18 @@ inputs = {
 
   db_name     = "collabnotes_dev"
   db_username = "collabnotes"
-  db_password = "CHANGE_ME_USE_SECRETS_MANAGER"
+  db_password = get_env("DB_PASSWORD")
 
   db_publicly_accessible     = false
   db_backup_retention_period = 7
   db_skip_final_snapshot     = true
   db_deletion_protection     = false
+
+  # --------------------
+  # Secrets manager
+  # --------------------
+
+  db_secret_name = "collab-notes-db"
 }
+
+ 

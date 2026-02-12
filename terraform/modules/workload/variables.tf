@@ -175,10 +175,6 @@ variable "health_check_matcher" {
   default = "200"
 }
 
-# variable "ssl_policy" {
-#   type    = string
-#   default = "ELBSecurityPolicy-2016-08"
-# }
 variable "https_listener_port" {
   type    = number
   default = 443
@@ -387,4 +383,14 @@ variable "db_instance_class" {
 variable "db_allocated_storage" {
   type        = number
   description = "Allocated storage in GB"
+}
+
+variable "environment" {
+  type = string
+}
+
+variable "db_secret_name" {
+  description = "Base name for the DB secret"
+  type        = string
+  default     = "collab-notes-db"
 }

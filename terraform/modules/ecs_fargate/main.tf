@@ -8,6 +8,9 @@ terraform {
   }
 }
 
+locals {
+  env = var.environment
+}
 resource "aws_ecs_cluster" "this" {
   name = var.cluster_name
 
@@ -48,18 +51,42 @@ resource "aws_ecs_task_definition" "this" {
   task_role_arn            = var.task_role_arn
 
   container_definitions = jsonencode([
-    {
-      name                   = var.container_name
-      image                  = var.image_url
-      essential              = true
-      readonlyRootFilesystem = false
-      portMappings = [
-        {
-          containerPort = var.container_port
-          hostPort      = var.container_port
-          protocol      = "tcp"
-        }
-      ]
-    }
-  ])
+  {
+    name                   = var.container_name
+    image                  = var.image_url
+    essential              = true
+    readonlyRootFilesystem = false
+
+    portMappings = [
+      {
+        containerPort = var.container_port
+        hostPort      = var.container_port
+        protocol      = "tcp"
+      }
+    ]
+
+    secrets = [
+      {
+        name      = "DB_USERNAME"
+        valueFrom = "${var.db_secret_arn}:username::"
+      },
+      {
+        name      = "DB_PASSWORD"
+        valueFrom = "${var.db_secret_arn}:password::"
+      },
+      {
+        name      = "DB_NAME"
+        valueFrom = "${var.db_secret_arn}:db_name::"
+      },
+      {
+        name      = "DB_HOST"
+        valueFrom = "${var.db_secret_arn}:host::"
+      },
+      {
+        name      = "DB_PORT"
+        valueFrom = "${var.db_secret_arn}:port::"
+      }
+    ]
+  }
+])
 }

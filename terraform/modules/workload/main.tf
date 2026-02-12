@@ -46,6 +46,7 @@ module "iam_roles" {
   ecr_repo_name             = "${var.ecr_repo_name}-${local.env}"
   create_flow_logs_role     = var.create_flow_logs_role
   flow_logs_role_name       = "${var.flow_logs_role_name}-${local.env}"
+  secrets_manager_arns      = [module.secrets_manager.db_secret_arn]
 }
 
 # --- ALB ---
@@ -112,8 +113,8 @@ module "vpc" {
 }
 
 # --- ECS ---
-module "ecs" {
-  source             = "../ecs_fargate"
+module "ecs_fargate" {
+  source = "../ecs_fargate"
   cluster_name       = "${var.cluster_name}-${local.env}"
   service_name       = "${var.service_name}-${local.env}"
   desired_count      = local.env == "prod" ? 1 : 1
@@ -128,6 +129,8 @@ module "ecs" {
   target_group_arn   = module.alb.target_group_arn
   subnet_ids         = module.vpc.private_subnet_ids
   security_group_ids = [module.security_groups.ecs_sg_id]
+  environment   = var.environment
+  db_secret_arn = module.secrets_manager.db_secret_arn
 }
 
 # --- RDS
@@ -157,6 +160,22 @@ module "rds" {
   db_backup_retention_period = var.db_backup_retention_period
   db_skip_final_snapshot     = var.db_skip_final_snapshot
   db_deletion_protection     = var.db_deletion_protection
+
+  tags = var.tags
+}
+
+module "secrets_manager" {
+  source = "../secrets_manager"
+
+  db_secret_name = var.db_secret_name
+  environment    = var.environment
+
+  db_username = var.db_username
+  db_password = var.db_password
+  db_name     = var.db_name
+
+  db_host = module.rds.db_endpoint
+  db_port = module.rds.db_port
 
   tags = var.tags
 }
