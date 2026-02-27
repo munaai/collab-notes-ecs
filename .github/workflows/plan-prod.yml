@@ -64,4 +64,4 @@ jobs:
 
       - name: Terragrunt Plan (prod)
         working-directory: terraform/terragrunt/prod
-        run: terragrunt plan --terragrunt-non-interactive -- -out=tfplan
+        run: terragrunt plan --terragrunt-non-interactive -out=tfplan
