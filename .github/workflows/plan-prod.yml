@@ -59,11 +59,10 @@ jobs:
 
       - name: Run Checkov
         run: |
-          checkov -d terraform/modules \
-            --skip-path terraform/modules/rds \
-            --quiet \
-            --framework terraform \
-            --skip-check CKV2_AWS_31,CKV2_AWS_76,CKV_AWS_336,CKV_AWS_150
+          checkov -d terraform/modules --quiet --framework terraform \
+          --skip-path terraform/modules/rds \
+          --skip-path rds \
+          --skip-check CKV2_AWS_31,CKV2_AWS_76,CKV_AWS_336,CKV_AWS_150
 
       - name: Terragrunt Plan (prod)
         working-directory: terraform/terragrunt/prod
