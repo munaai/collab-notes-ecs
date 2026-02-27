@@ -114,7 +114,7 @@ module "vpc" {
 
 # --- ECS ---
 module "ecs_fargate" {
-  source = "../ecs_fargate"
+  source             = "../ecs_fargate"
   cluster_name       = "${var.cluster_name}-${local.env}"
   service_name       = "${var.service_name}-${local.env}"
   desired_count      = local.env == "prod" ? 1 : 1
@@ -129,8 +129,8 @@ module "ecs_fargate" {
   target_group_arn   = module.alb.target_group_arn
   subnet_ids         = module.vpc.private_subnet_ids
   security_group_ids = [module.security_groups.ecs_sg_id]
-  environment   = var.environment
-  db_secret_arn = module.secrets_manager.db_secret_arn
+  environment        = var.environment
+  db_secret_arn      = module.secrets_manager.db_secret_arn
 }
 
 # --- RDS

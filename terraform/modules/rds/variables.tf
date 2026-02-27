@@ -51,8 +51,8 @@ variable "db_security_group_id" {
 }
 
 variable "db_publicly_accessible" {
-  type        = bool
-  default     = false
+  type    = bool
+  default = false
 }
 
 variable "db_backup_retention_period" {

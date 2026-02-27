@@ -23,10 +23,10 @@ resource "aws_db_instance" "this" {
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [var.db_security_group_id]
 
-  publicly_accessible        = var.db_publicly_accessible
-  backup_retention_period    = var.db_backup_retention_period
-  skip_final_snapshot        = var.db_skip_final_snapshot
-  deletion_protection        = var.db_deletion_protection
+  publicly_accessible     = var.db_publicly_accessible
+  backup_retention_period = var.db_backup_retention_period
+  skip_final_snapshot     = var.db_skip_final_snapshot
+  deletion_protection     = var.db_deletion_protection
 
   tags = var.tags
 }

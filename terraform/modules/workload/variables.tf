@@ -294,13 +294,13 @@ variable "rds_port" {
 }
 
 variable "rds_protocol" {
-  type        = string
-  default     = "tcp"
+  type    = string
+  default = "tcp"
 }
 
 variable "rds_ingress_description" {
-  type        = string
-  default     = "Postgres access from ECS only"
+  type    = string
+  default = "Postgres access from ECS only"
 }
 
 variable "rds_egress_from_port" {

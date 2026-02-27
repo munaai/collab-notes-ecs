@@ -51,30 +51,30 @@ resource "aws_ecs_task_definition" "this" {
   task_role_arn            = var.task_role_arn
 
   container_definitions = jsonencode([
-  {
-    name                   = var.container_name
-    image                  = var.image_url
-    essential              = true
-    readonlyRootFilesystem = false
+    {
+      name                   = var.container_name
+      image                  = var.image_url
+      essential              = true
+      readonlyRootFilesystem = false
 
-    portMappings = [
-      {
-        containerPort = var.container_port
-        hostPort      = var.container_port
-        protocol      = "tcp"
-      }
-    ]
+      portMappings = [
+        {
+          containerPort = var.container_port
+          hostPort      = var.container_port
+          protocol      = "tcp"
+        }
+      ]
 
-    secrets = [
-  {
-    name      = "MEMOS_DRIVER"
-    valueFrom = "${var.db_secret_arn}:driver::"
-  },
-  {
-    name      = "MEMOS_DSN"
-    valueFrom = "${var.db_secret_arn}:dsn::"
-  }
-]
-  }
-])
+      secrets = [
+        {
+          name      = "MEMOS_DRIVER"
+          valueFrom = "${var.db_secret_arn}:driver::"
+        },
+        {
+          name      = "MEMOS_DSN"
+          valueFrom = "${var.db_secret_arn}:dsn::"
+        }
+      ]
+    }
+  ])
 }
