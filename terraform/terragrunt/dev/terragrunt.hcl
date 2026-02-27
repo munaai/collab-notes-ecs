@@ -79,7 +79,6 @@ inputs = {
   db_identifier        = "collab-notes-postgres-dev"
 
   db_engine            = "postgres"
-  db_engine_version    = "15.4"
   db_instance_class    = "db.t3.micro"
   db_allocated_storage = 20
 

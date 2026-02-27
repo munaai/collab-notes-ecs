@@ -14,11 +14,6 @@ variable "db_engine" {
   default     = "postgres"
 }
 
-variable "db_engine_version" {
-  type        = string
-  description = "Database engine version"
-}
-
 variable "db_instance_class" {
   type        = string
   description = "RDS instance size"

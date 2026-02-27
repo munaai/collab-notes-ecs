@@ -370,11 +370,6 @@ variable "db_engine" {
   description = "Database engine (e.g. postgres)"
 }
 
-variable "db_engine_version" {
-  type        = string
-  description = "Database engine version (e.g. 15.4)"
-}
-
 variable "db_instance_class" {
   type        = string
   description = "RDS instance class (e.g. db.t3.micro)"

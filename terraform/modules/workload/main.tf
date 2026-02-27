@@ -142,7 +142,6 @@ module "rds" {
 
   # Engine
   db_engine            = var.db_engine
-  db_engine_version    = var.db_engine_version
   db_instance_class    = var.db_instance_class
   db_allocated_storage = var.db_allocated_storage
 

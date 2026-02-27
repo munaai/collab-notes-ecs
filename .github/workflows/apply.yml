@@ -1,4 +1,4 @@
-name: Terragrunt Apply (prod)
+name: Terragrunt Apply
 
 on:
   workflow_run:
