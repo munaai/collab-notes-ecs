@@ -7,13 +7,14 @@ on:
 
   workflow_dispatch:
 
-env:
-  AWS_REGION: eu-west-2
 
 jobs:
   terragrunt-plan:
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: eu-west-2
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
     permissions:
       id-token: write
@@ -63,4 +64,4 @@ jobs:
 
       - name: Terragrunt Plan (prod)
         working-directory: terraform/terragrunt/prod
-        run: terragrunt plan --terragrunt-non-interactive -out=tfplan
+        run: terragrunt plan --terragrunt-non-interactive -- -out=tfplan
