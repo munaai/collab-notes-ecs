@@ -1,5 +1,5 @@
 locals {
-  env = terraform.workspace
+  env = var.environment
 }
 
 data "aws_caller_identity" "current" {}
