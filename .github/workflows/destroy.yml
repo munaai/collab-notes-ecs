@@ -1,14 +1,14 @@
-name: Terragrunt Destroy (prod)
+name: Terragrunt Destroy
 
 on:
   workflow_dispatch:
 
-env:
-  AWS_REGION: eu-west-2
-
 jobs:
   terragrunt-destroy:
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: eu-west-2
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
     permissions:
       id-token: write
