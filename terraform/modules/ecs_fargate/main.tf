@@ -66,27 +66,15 @@ resource "aws_ecs_task_definition" "this" {
     ]
 
     secrets = [
-      {
-        name      = "DB_USERNAME"
-        valueFrom = "${var.db_secret_arn}:username::"
-      },
-      {
-        name      = "DB_PASSWORD"
-        valueFrom = "${var.db_secret_arn}:password::"
-      },
-      {
-        name      = "DB_NAME"
-        valueFrom = "${var.db_secret_arn}:db_name::"
-      },
-      {
-        name      = "DB_HOST"
-        valueFrom = "${var.db_secret_arn}:host::"
-      },
-      {
-        name      = "DB_PORT"
-        valueFrom = "${var.db_secret_arn}:port::"
-      }
-    ]
+  {
+    name      = "MEMOS_DRIVER"
+    valueFrom = "${var.db_secret_arn}:driver::"
+  },
+  {
+    name      = "MEMOS_DSN"
+    valueFrom = "${var.db_secret_arn}:dsn::"
+  }
+]
   }
 ])
 }

@@ -5,11 +5,8 @@ resource "aws_secretsmanager_secret" "db" {
 resource "aws_secretsmanager_secret_version" "db" {
   secret_id = aws_secretsmanager_secret.db.id
 
-  secret_string = jsonencode({
-    username = var.db_username
-    password = var.db_password
-    host     = var.db_host
-    port     = 5432
-    dbname   = var.db_name
-  })
+ secret_string = jsonencode({
+  driver = "postgres"
+  dsn    = "postgres://${var.db_username}:${var.db_password}@${var.db_host}:${var.db_port}/${var.db_name}?sslmode=require"
+})
 }
