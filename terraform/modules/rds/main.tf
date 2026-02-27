@@ -10,6 +10,8 @@ resource "aws_db_subnet_group" "this" {
 resource "aws_db_instance" "this" {
   identifier = var.db_identifier
 
+  copy_tags_to_snapshot = true
+
   engine         = var.db_engine
   engine_version = var.db_engine_version
 
