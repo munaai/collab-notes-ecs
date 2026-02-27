@@ -389,3 +389,8 @@ variable "db_secret_name" {
   type        = string
   default     = "collab-notes-db"
 }
+
+variable "region" {
+  description = "AWS region (e.g. eu-west-2)"
+  type        = string
+}

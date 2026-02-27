@@ -131,6 +131,7 @@ module "ecs_fargate" {
   security_group_ids = [module.security_groups.ecs_sg_id]
   environment        = var.environment
   db_secret_arn      = module.secrets_manager.db_secret_arn
+  region             = var.region
 }
 
 # --- RDS

@@ -71,3 +71,7 @@ variable "environment" {
   type        = string
 }
 
+variable "region" {
+  description = "AWS region (e.g. eu-west-2)"
+  type        = string
+}
