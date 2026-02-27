@@ -92,5 +92,6 @@ resource "aws_security_group" "rds" {
     to_port     = var.rds_egress_to_port
     protocol    = var.rds_egress_protocol
     cidr_blocks = var.rds_egress_cidr_blocks
+    description = "Allow outbound from RDS (required for DNS/updates)"
   }
 }
