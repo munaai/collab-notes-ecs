@@ -12,7 +12,7 @@ resource "aws_db_instance" "this" {
 
   copy_tags_to_snapshot = true
 
-  engine         = var.db_engine
+  engine = var.db_engine
 
   instance_class    = var.db_instance_class
   allocated_storage = var.db_allocated_storage

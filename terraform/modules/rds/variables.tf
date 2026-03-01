@@ -56,7 +56,7 @@ variable "db_backup_retention_period" {
 }
 
 variable "db_skip_final_snapshot" {
-  type    = bool
+  type = bool
 }
 
 variable "db_deletion_protection" {

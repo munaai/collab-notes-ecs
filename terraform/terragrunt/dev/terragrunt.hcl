@@ -88,7 +88,7 @@ inputs = {
 
   db_publicly_accessible     = false
   db_backup_retention_period = 7
-  db_skip_final_snapshot     = true
+  db_skip_final_snapshot     = false
   db_deletion_protection     = false
 
   # --------------------
