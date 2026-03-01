@@ -61,7 +61,7 @@ resource "aws_iam_role_policy" "ecs_execution_secrets" {
 
 # ECS TASK ROLE (Your application uses this ONLY if it needs AWS API access at runtime)
 resource "aws_iam_role" "ecs_task" {
-  name = "ecs-task-role-${var.environment}"
+  name = "ecs-task-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
